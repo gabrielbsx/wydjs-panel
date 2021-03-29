@@ -1,17 +1,13 @@
 const { Router } = require('express');
 const routes = Router();
 
-/**
- * CONTROLLERS
- */
 const homeController = require('./controllers/home-controller');
 const userController = require('./controllers/user-controller');
 const newsController = require('./controllers/news-controller');
 
-/**
- * MIDDLEWARES
- */
+
 const authenticate = require('./middlewares/authenticate');
+
 
 routes.get('/', homeController);
 
