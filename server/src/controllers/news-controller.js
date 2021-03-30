@@ -14,6 +14,8 @@ exports.create = async (req, res, next) => {
 
         const create = newsService.create();
 
+        return res.send();
+
     } catch (err) {
         return res.status(500).json({
             status: 'error',
@@ -25,6 +27,7 @@ exports.create = async (req, res, next) => {
 
 exports.read = async (req, res, next) => {
     try {
+        return res.send();
     } catch (err) {
         return res.status(500).json({
             status: 'error',
@@ -37,7 +40,7 @@ exports.read = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const { title, slug, category, content } = req.body;
-        
+        return res.send();
     } catch (err) {
         return res.status(500).json({
             status: 'error',
@@ -49,7 +52,7 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
     try {
-
+        return res.send();
     } catch (err) {
         return res.status(500).json({
             status: 'error',

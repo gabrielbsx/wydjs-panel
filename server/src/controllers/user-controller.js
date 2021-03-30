@@ -2,20 +2,25 @@ const { updateByUsername } = require('../repositories/user-repository');
 const UserService = require('../services/user-service');
 
 exports.create = async (req, res, next) => {
-    res.send();
+    try {
+        return res.send();
+    } catch (err) {
+        return res.status(500).json({
+
+        });
+    }
 };
 
 exports.read = async (req, res, next) => {
     try {
+        return res.send();
     } catch (err) {
-        console.log(err);
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             auth: true,
             message: 'Internal error!',
         });
     }
-    res.send();
 };
 
 exports.update = async (req, res, next) => {
@@ -26,9 +31,9 @@ exports.update = async (req, res, next) => {
         userService.setPassword(password);
         userService.setOldPassword(oldpassword);
         userService.updateByUsername(username);
+        return res.send();
     } catch (err) {
-        console.log(err);
-        res.status(500).json({
+        return res.status(500).json({
             status: 'error',
             auth: true,
             message: 'Internal error!',
@@ -37,5 +42,11 @@ exports.update = async (req, res, next) => {
 };
 
 exports.delete = async (req, res, next) => {
-    res.send();
+    try {
+        return res.send();
+    } catch (err) {
+        return res.status(500).json({
+
+        });
+    }
 };
