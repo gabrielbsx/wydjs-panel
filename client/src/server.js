@@ -5,7 +5,7 @@ const   express     = require('express'),
         compression = require('compression'),
         jwt         = require('jsonwebtoken'),
         ejs         = require('ejs'),
-        layouts     = require('express-ejs-layouts'),
+        engine      = require('ejs-locals'),
         flash       = require('express-flash-messages'),
         path        = require('path')
         routes      = require('./routes');
@@ -15,15 +15,15 @@ app = express();
 
 app.use(cors());
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(morgan('common'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 app.set('trust proxy', 1);
 
+app.engine('ejs', engine);
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
-app.use(layouts);
 app.use('/public', express.static(path.join(__dirname, '/public')));
 
 app.use(routes);
