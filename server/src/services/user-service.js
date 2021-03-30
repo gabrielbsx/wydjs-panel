@@ -37,6 +37,19 @@ module.exports = class userService{
             return false;
         }
     }
+
+    setConfirmPassword(confirm_password) {
+        try {
+            if (this.password.match(this.passRules)) {
+                this.confirm_password = confirm_password;
+                return true;
+            }
+            this.message = 'A confirmação de senha deve cconter 4 a 12 caracteres alfanuméricos!';
+        } catch (err) {
+            this.message = err.toString();
+            return false;
+        }
+    }
     
     setEmail(email) {
         try {
