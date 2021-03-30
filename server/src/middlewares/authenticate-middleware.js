@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
             if (err) return res.status(403).json({ status: 'error', auth: false, message: err.toString(), });
             req.body = decoded;
         });
-        next();
+        return next();
     } catch (err) {
         return res.status(500).json({
             status: 'error',
