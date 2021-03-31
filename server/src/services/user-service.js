@@ -1,5 +1,6 @@
 const userRepository = require('../repositories/user-repository');
 const userSchema = require('../schemas/users-schema');
+const bcrypt = require('bcryptjs');
 
 module.exports = class userService{
     constructor() {
@@ -9,8 +10,8 @@ module.exports = class userService{
     create(account) {
         try {
             if (userSchema.validate(account)) {
-                if (!this.userExists()) {
-                    if (userRepository.create(this.username, this.password, this.email, this.name, this.access, this.status)) {
+                if (!this.getByUsername({ username: account.username })) {
+                    if (userRepository.create(account)) {
                         this.message = 'Cadastro efetuado com sucesso!';
                         return true;
                     } else {
@@ -28,22 +29,17 @@ module.exports = class userService{
         }
     }
 
-    userExists() {
+    getByUsername(user) {
         try {
-            if (userRepository.exists(this.username)) {
-                return true;
-            }
-            return false;
-        } catch (err) {
-            return false;
-        }
-    }
-
-    getByUsername() {
-        try {
-            const user = userRepository.getByUsername(this.username);
-            if (user) {
-                return user;
+            if (userSchema.validate(user)) {
+                const user = userRepository.read(user);
+                if (user) {
+                    return user;
+                } else {
+                    this.message = 'Não foi possível encontrar a conta!';
+                }
+            } else {
+                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
@@ -53,9 +49,15 @@ module.exports = class userService{
 
     getByEmail(user) {
         try {
-            const user = userRepository.getByEmail(this.email);
-            if (user) {
-                return user;
+            if (userSchema.validate(user)) {
+                const user = userRepository.read(user);
+                if (user) {
+                    return user;
+                } else {
+                    this.message = 'Não foi possível encontrar a conta!';
+                }
+            } else {
+                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
@@ -66,11 +68,17 @@ module.exports = class userService{
     update(user) {
         try {
             if (userSchema.validate(user)) {
-                if (userRepository.update(user)) {
-                    this.message = 'Conta atualizada com sucesso!';
-                    return true;
+                const userData = this.getByUsername({ username: user.username });
+                if (userData) {
+                    if (bcrypt.compareSync(user.oldpassword, userData.password))
+                    if (userRepository.update(user, { username: user.username, })) {
+                        this.message = 'Conta atualizada com sucesso!';
+                        return true;
+                    } else {
+                        this.message = 'Não foi possível atualizar a conta!';
+                    }
                 } else {
-                    this.message = 'Não foi possível atualizar a conta!';
+                    this.message = 'Usuário inexistente!';
                 }
             } else {
                 this.message = 'Conta inválida!';
@@ -84,47 +92,11 @@ module.exports = class userService{
     updateByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                if (userRepository.updateByEmail(user)) {
+                if (userRepository.update(user, { email: user.email, })) {
                     this.message = 'Conta(s) atualizada com sucesso!';
                     return true;
                 } else { 
                     this.message = 'Não foi possível atualizar a conta(s)!';
-                }
-            } else {
-                this.message = 'Conta inválida!';
-            }
-            return false;
-        } catch (err) {
-            return false;
-        }
-    }
-
-    updateByUsername(user) {
-        try {
-            if (userSchema.validate(user)) {
-                if (userRepository.updateByUsername(user)) {
-                    this.message = 'Conta atualizada com sucesso!';
-                    return true;
-                } else {
-                    this.message = 'Não foi possível atualizar a conta!';
-                }
-            } else {
-                this.message = 'Conta inválida!';
-            }
-            return false;
-        } catch (err) {
-            return false;
-        }
-    }
-
-    deleteByUsername(user) {
-        try {
-            if (userSchema.validate(user)) {
-                if (userRepository.deleteByUsername(user)) {
-                    this.message = 'Conta atualizada com sucesso!';
-                    return true;
-                } else {
-                    this.message = 'Não foi possível atualizar a conta!';
                 }
             } else {
                 this.message = 'Conta inválida!';

@@ -16,7 +16,7 @@ routes.use(authenticate);
 
 routes.route('/users')
         .post(userController.create)
-        .get(userController.read)
+        .get(userController.getByUsername)
         .put(userController.update)
         .delete(userController.delete);
 

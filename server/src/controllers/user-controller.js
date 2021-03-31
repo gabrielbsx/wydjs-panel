@@ -25,7 +25,7 @@ exports.create = async (req, res, next) => {
             });
         }
 
-        return res.status(404).json({
+        return res.status(400).json({
             status: 'error',
             message: userService.message,
         });
@@ -38,19 +38,15 @@ exports.create = async (req, res, next) => {
     }
 };
 
-exports.getByEmail = async (req, res, next) => {
+exports.getByUsername = async (req, res, next) => {
     try {
-        const { name, password, confirm_password, email, status, access } = req.body;
+        const { username, password } = req.body;
 
         const userService = new UserService();
 
-        var result = userService.getByEmail({
-            name: name,
+        var result = userService.getByUsername({
+            username: username,
             password: password,
-            confirm_password: confirm_password,
-            email: email,
-            status: status,
-            access: access,
         });
 
         if (result) {
@@ -60,7 +56,39 @@ exports.getByEmail = async (req, res, next) => {
                 message: result,
             });
         }
-        return res.status(404).json({
+        return res.status(400).json({
+            status: 'error',
+            auth: true,
+            message: 'Não há conta com este email',
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            auth: true,
+            message: 'Não foi possível efetuar a operação!',
+        });
+    }
+};
+
+exports.getByEmail = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        const userService = new UserService();
+
+        var result = userService.getByEmail({
+            email: email,
+        });
+
+        if (result) {
+            return res.status(200).json({
+                status: 'success',
+                auth: true,
+                message: result,
+            });
+        }
+        return res.status(400).json({
             status: 'error',
             auth: true,
             message: 'Não há conta com este email',
@@ -77,16 +105,26 @@ exports.getByEmail = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
-        const { username, password, oldpassword } = req.body;
+        const { username, password, confirm_password, oldpassword } = req.body;
 
         const userService = new UserService();
-        
-        userService.setUsername(username);
-        userService.setPassword(password);
-        userService.setOldPassword(oldpassword);
-        userService.updateByUsername();
 
-        return res.status(200).json({
+        const user = userService.update({
+            username: username,
+            password: password,
+            confirm_password: confirm_password,
+            oldpassword: oldpassword,
+        });
+
+        if (user) {
+            return res.status(200).json({
+                status: 'success',
+                auth: true,
+                message: userService.message,
+            });
+        }
+
+        return res.status(400).json({
             status: 'error',
             auth: true,
             message: userService.message,
