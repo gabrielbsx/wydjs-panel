@@ -1,30 +1,18 @@
 const newsModel = require('../models/news-model');
 
-exports.create = async (title, slug, category, content, name) => {
+exports.create = async (news) => {
     try {
-        return await newsModel.create({
-            title: title,
-            slug: slug,
-            content: content,
-            name: name,
-            category: category,
-        });
+        return await newsModel.create(news);
     } catch (err) {
         return false;
     }
 };
 
-exports.updateById = async (id, title, slug, category, content, name) => {
+exports.updateById = async (news) => {
     try {
-        return await newsModel.update({
-            title: title,
-            slug: slug,
-            content: content,
-            name: name,
-            category: category,
-        }, {
+        return await newsModel.update(news, {
             where: {
-                id: id,
+                id: news.id,
             },
         });
     } catch (err) {
@@ -32,23 +20,13 @@ exports.updateById = async (id, title, slug, category, content, name) => {
     }
 };
 
-exports.updateByUsername = async (username, password) => {
+exports.deleteById = async (news) => {
     try {
-        return await userModel.update({
-            password: password
-        }, {
+        return await userModel.delete({
             where: {
-                username: username,
-            }
-        })
-    } catch (err) {
-        return false;
-    }
-};
-
-exports.deleteByUsername = async (username) => {
-    try {
-        return false;
+                id: news.id,
+            },
+        });
     } catch (err) {
         return false;
     }

@@ -51,11 +51,29 @@ module.exports = class userService{
         }
     }
 
-    getByEmail() {
+    getByEmail(user) {
         try {
             const user = userRepository.getByEmail(this.email);
             if (user) {
                 return user;
+            }
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    update(user) {
+        try {
+            if (userSchema.validate(user)) {
+                if (userRepository.update(user)) {
+                    this.message = 'Conta atualizada com sucesso!';
+                    return true;
+                } else {
+                    this.message = 'Não foi possível atualizar a conta!';
+                }
+            } else {
+                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
@@ -84,8 +102,8 @@ module.exports = class userService{
     updateByUsername(user) {
         try {
             if (userSchema.validate(user)) {
-                if (userRepository.updateByUsername(this.username, this.password, this.oldpassword)) {
-                    this.message = '';
+                if (userRepository.updateByUsername(user)) {
+                    this.message = 'Conta atualizada com sucesso!';
                     return true;
                 } else {
                     this.message = 'Não foi possível atualizar a conta!';
@@ -102,7 +120,14 @@ module.exports = class userService{
     deleteByUsername(user) {
         try {
             if (userSchema.validate(user)) {
-                if
+                if (userRepository.deleteByUsername(user)) {
+                    this.message = 'Conta atualizada com sucesso!';
+                    return true;
+                } else {
+                    this.message = 'Não foi possível atualizar a conta!';
+                }
+            } else {
+                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
@@ -110,10 +135,17 @@ module.exports = class userService{
         }
     }
 
-    deleteByEmail() {
+    deleteByEmail(user) {
         try {
-            if (emailRules(this.email)) {
-    
+            if (userSchema.validate(user)) {
+                if (userRepository.deleteByEmail(user)) {
+                    this.message = 'Conta(s) deletada(s) com sucesso!';
+                    return true;
+                } else {
+                    this.message = 'Não foi possível deletar a conta(s)!';
+                }
+            } else {
+                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {

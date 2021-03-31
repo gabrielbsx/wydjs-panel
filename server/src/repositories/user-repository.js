@@ -1,64 +1,53 @@
 const userModel = require('../models/users-model');
 
-exports.create = async (username, password, email, name, access, status) => {
+exports.create = async (user) => {
     try {
-        return await userModel.create({
-            username: username,
-            password: password,
-            email: email,
-            name: name,
-            access: access,
-            status: status,
-        });
+        return await userModel.create(user);
     } catch (err) {
-        console.log(err);
         return false;
     }
 };
 
-exports.exists = async (username) => {
+exports.exists = async (user) => {
     try {
         return await userModel.findOne({
-            where: {
-                username: username,
-            }
+            where: user,
         });
     } catch (err) {
-        console.log(err);
         return false;
     }
 };
 
-exports.updateByEmail = async (email) => {
+exports.updateByEmail = async (user) => {
     try {
-        return false;
-    } catch (err) {
-        console.log(err);
-        return false;
-    }
-};
-
-exports.updateByUsername = async (username, password) => {
-    try {
-        return await userModel.update({
-            password: password
-        }, {
+        return await userModel.update(user, {
             where: {
-                username: username
-            }
+                email: user.email,
+            },
+        });
+    } catch (err) {
+        return false;
+    }
+};
+
+exports.updateByUsername = async (user) => {
+    try {
+        return await userModel.update(user, {
+            where: {
+                username: user.username,
+            },
         })
     } catch (err) {
-        console.log(err);
         return false;
     }
 };
 
-exports.deleteByUsername = async (username) => {
+exports.delete = async (user) => {
     try {
-        return false;
+        return await userModel.delete({
+            where: user,
+        });
     } catch (err) {
-        console.log(err);
         return false;
     }
 };
-
