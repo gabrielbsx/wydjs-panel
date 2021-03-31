@@ -23,6 +23,6 @@ routes.route('/users')
 routes.route('/news')
         .post(newsController.create)
         .put(newsController.update)
-        .delete(newsController.delete)
+        .delete(newsController.delete);
 
 module.exports = routes;

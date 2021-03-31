@@ -1,8 +1,15 @@
 const userModel = require('../models/users-model');
 
-exports.create = async (username, password, email, name) => {
+exports.create = async (username, password, email, name, access, status) => {
     try {
-        return false;
+        return await userModel.create({
+            username: username,
+            password: password,
+            email: email,
+            name: name,
+            access: access,
+            status: status,
+        });
     } catch (err) {
         console.log(err);
         return false;
@@ -11,7 +18,11 @@ exports.create = async (username, password, email, name) => {
 
 exports.exists = async (username) => {
     try {
-        return false;
+        return await userModel.findOne({
+            where: {
+                username: username,
+            }
+        });
     } catch (err) {
         console.log(err);
         return false;

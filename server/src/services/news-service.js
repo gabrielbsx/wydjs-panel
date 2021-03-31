@@ -4,7 +4,6 @@ module.exports = class newsService{
     slugRules = /^([a-zA-Z0-9_-]{10,50})$/;
 
     constructor() {
-        this.status = '';
         this.message = '';
     }
 

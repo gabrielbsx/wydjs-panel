@@ -8,6 +8,8 @@ class Users extends Model {
         password: DataTypes.STRING(60),
         email: DataTypes.STRING(100),
         name: DataTypes.STRING(50),
+        access: DataTypes.INTEGER,
+        status: DataTypes.INTEGER,
         created_at: DataTypes.DATE,
         updated_at: DateTypes.DATE,
     }, {

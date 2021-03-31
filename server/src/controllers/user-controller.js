@@ -13,6 +13,8 @@ exports.create = async (req, res, next) => {
         userService.setPassword(password);
         userSerivce.setConfirmPassword(confirm_password);
         userService.setEmail(email);
+        userService.setStatus(0);
+        userService.setAccess(0);
 
         return res.status(200).json({
             status: 'success',
