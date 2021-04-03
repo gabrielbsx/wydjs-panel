@@ -21,20 +21,17 @@ class Users extends Model {
         modelName: "users",
       }
     );
-    this.addHook("beforeCreate", async (user) => {
+    this.addHook('beforeSave', async user => {
       if (user.password) {
-        user.password = await bcrypt.hash(user.password, 8);
+        const salt = await bcrypt.genSalt(15);
+        user.password = await bcrypt.hash(user.password, salt);
       }
       user.id = v4();
     });
-    this.addHook("beforeSave", async (user) => {
+    this.addHook('beforeUpdate', async user => {
       if (user.password) {
-        user.password = await bcrypt.hash(user.password, 8);
-      }
-    });
-    this.addHook("beforeUpdate", async (user) => {
-      if (user.password) {
-        user.password = await bcrypt.hash(user.password, 8);
+        const salt = await bcrypt.genSalt(15);
+        user.password = await bcrypt.hash(user.password, salt);
       }
     });
     return this;

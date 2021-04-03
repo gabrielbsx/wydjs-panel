@@ -1,4 +1,4 @@
-    const UserService = require('../services/user-service');
+const UserService = require('../services/user-service');
 
 exports.create = async (req, res, next) => {
     try {
@@ -33,6 +33,39 @@ exports.create = async (req, res, next) => {
         return res.status(500).json({
             status: 'error',
             message: 'Não foi possível efetuar aa operação!',
+        });
+    }
+};
+
+exports.read = async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+
+        const userService = new UserService();
+
+        var result = await userService.read({
+            username: username,
+            password: password,
+        });
+
+        if (result) {
+            return res.status(200).json({
+                status: 'success',
+                auth: true,
+                message: userService.message,
+            });
+        }
+        return res.status(404).json({
+            status: 'error',
+            auth: true,
+            message: userService.message,
+        });
+    } catch (err) {
+        console.log(err);   
+        return res.status(500).json({
+            status: 'error',
+            auth: true,
+            message: 'Não foi possível efetuar a operação!',
         });
     }
 };

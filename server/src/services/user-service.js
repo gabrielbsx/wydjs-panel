@@ -1,5 +1,5 @@
 const userRepository = require('../repositories/user-repository');
-const userSchema = require('../schemas/users-schema');
+const { authSchema, registerSchema, changeSchema } = require('../schemas/users-schema');
 const bcrypt = require('bcryptjs');
 
 module.exports = class userService{    
@@ -13,7 +13,7 @@ module.exports = class userService{
 
     async create(user) {
         try {
-            if (userSchema.validate(user)) {
+            if (registerSchema.validate(user)) {
                 if (!(await this.getByUsername({ username: user.username }))) {
                     delete user.confirm_password;
                     const userData = await userRepository.create(user);
@@ -39,10 +39,10 @@ module.exports = class userService{
     async read(user) {
         try {
             const password = user.password;
-            delete user.password;   
+            delete user.password;
             const result = await this.getByUsername(user);
             if (result) {
-                if (bcrypt.compareSync(password, result.password)) {
+                if ((await bcrypt.compare(password, result.password))) {
                     this.message = 'Login efetuado com sucesso!';
                     return true;
                 } else {
@@ -53,6 +53,7 @@ module.exports = class userService{
             }
             return false;
         } catch (err) {
+            console.log(err);
             this.message = 'Erro interno!';
             return false;
         }
@@ -60,11 +61,11 @@ module.exports = class userService{
 
     async getByUsername(user) {
         try {
-            if (userSchema.validate(user)) {
+            if (authSchema.validate(user)) {
                 const userData = await userRepository.read(user);
                 if (userData) { 
                     this.message = 'Conta encontrada com sucesso!';
-                    return true;
+                    return userData;
                 } else {
                     this.message = 'Não foi possível encontrar a conta!';
                 }
@@ -79,7 +80,7 @@ module.exports = class userService{
 
     async getByEmail(user) {
         try {
-            if (userSchema.validate(user)) {
+            if (changeSchema.validate(user)) {
                 const userData = await userRepository.read(user);
                 if (userData) {
                     this.message = 'Conta encontrada com sucesso';
@@ -98,10 +99,10 @@ module.exports = class userService{
 
     async update(user) {
         try {
-            if (userSchema.validate(user)) {
+            if (changeSchema.validate(user)) {
                 const userData = await this.getByUsername({ username: user.username });
                 if (userData) {
-                    if (bcrypt.compareSync(user.oldpassword, userData.password)) {
+                    if (await bcrypt.compare(user.oldpassword, userData.password)) {
                         const userUpdate = await userRepository.update(user, { username: user.username, });
                         if (userUpdate) {
                             this.message = 'Conta atualizada com sucesso!';
@@ -126,7 +127,7 @@ module.exports = class userService{
 
     async updateByEmail(user) {
         try {
-            if (userSchema.validate(user)) {
+            if (changeSchema.validate(user)) {
                 const userData = await userRepository.update(user, { email: user.email, });
                 if (userData) {
                     this.message = 'Conta(s) atualizada(s) com sucesso!';
@@ -145,7 +146,7 @@ module.exports = class userService{
 
     async deleteByEmail(user) {
         try {
-            if (userSchema.validate(user)) {
+            if (changeSchema.validate(user)) {
                 const userData = await userRepository.deleteByEmail(user);
                 if (userData) {
                     this.message = 'Conta(s) deletada(s) com sucesso';
