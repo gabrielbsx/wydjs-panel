@@ -36,11 +36,33 @@ module.exports = class userService{
         }
     }
 
+    async read(user) {
+        try {
+            const password = user.password;
+            delete user.password;   
+            const result = await this.getByUsername(user);
+            if (result) {
+                if (bcrypt.compareSync(password, result.password)) {
+                    this.message = 'Login efetuado com sucesso!';
+                    return true;
+                } else {
+                    this.message = 'Não foi possível efetuar o login!';
+                }
+            } else {
+                this.message = 'Conta inexistente!';
+            }
+            return false;
+        } catch (err) {
+            this.message = 'Erro interno!';
+            return false;
+        }
+    }
+
     async getByUsername(user) {
         try {
             if (userSchema.validate(user)) {
                 const userData = await userRepository.read(user);
-                if (userData) {
+                if (userData) { 
                     this.message = 'Conta encontrada com sucesso!';
                     return true;
                 } else {

@@ -43,7 +43,7 @@ exports.getByUsername = async (req, res, next) => {
 
         const userService = new UserService();
 
-        var result = userService.getByUsername({
+        var result = await userService.read({
             username: username,
             password: password,
         });
