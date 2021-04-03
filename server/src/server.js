@@ -1,12 +1,13 @@
-const   express     = require("express"),
-        cors        = require("cors"),
-        morgan      = require("morgan"),
-        sequelize   = require("sequelize"),
+const   express     = require('express'),
+        cors        = require('cors'),
+        morgan      = require('morgan'),
+        sequelize   = require('sequelize'),
         helmet      = require('helmet'),
-        compression = require("compression"),
+        compression = require('compression'),
         jwt         = require('jsonwebtoken');
 
-require("dotenv").config();
+require('dotenv').config();
+require('./models');
 app = express();
 
 app.use(cors());

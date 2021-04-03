@@ -11,8 +11,9 @@ module.exports = {
     return await queryInterface.createTable('users', {
       id: {
         type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4(),
         allowNull: false,
-        autoIncrement: true,
+        unique: true,
         primaryKey: true,
       },
       name: {
@@ -44,6 +45,7 @@ module.exports = {
       },
       created_at: {
         type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
         allowNull: false,
       },
       updated_at: {

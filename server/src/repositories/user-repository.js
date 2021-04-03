@@ -4,6 +4,7 @@ exports.create = async (user) => {
     try {
         return await userModel.create(user);
     } catch (err) {
+        console.log(err);
         return false;
     }
 };

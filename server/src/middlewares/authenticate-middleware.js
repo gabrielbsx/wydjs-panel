@@ -12,10 +12,10 @@ module.exports = async (req, res, next) => {
             });
         }
         jwt.verify(token, secret, (err, decoded) => {
-            if (err) return res.status(403).json({ status: 'error', auth: false, message: err.toString(), });
-            req.body = decoded;
+            if (err) return res.status(403).json({ status: 'error', auth: false, message: 'Não foi possível autenticar o pacote!', });
+            //req.body = decoded;
+            return next();
         });
-        return next();
     } catch (err) {
         return res.status(500).json({
             status: 'error',

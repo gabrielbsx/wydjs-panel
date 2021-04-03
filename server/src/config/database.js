@@ -1,13 +1,12 @@
 module.exports = {
-  'username': 'kentaro',
-  'password': '$K3nts@',
-  'database': 'overdestiny',
+  'username': 'root',
+  'password': null,
+  'database': 'over',
   'host': '127.0.0.1',
   'dialect': 'mysql',
   'define': {
-    'timestamps': false,
-    'undescored': true,
-    'underscoredAll': true,
+    'timestamps': true,
+    'underscored': true,
     'freezeTableName': true,
   }
 };

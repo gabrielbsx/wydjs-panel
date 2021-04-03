@@ -1,39 +1,38 @@
-const { updateByUsername } = require('../repositories/user-repository');
-const UserService = require('../services/user-service');
+    const UserService = require('../services/user-service');
 
 exports.create = async (req, res, next) => {
     try {
 
-        const { name, username, password, email, confirm_password, status, access } = req.body;
+        const { name, username, password, email, confirm_password } = req.body;
 
         const userService = new UserService();
 
-        var result = userService.create({
+        var result = await userService.create({
             name: name,
             username: username,
             password: password,
             confirm_password: confirm_password,
             email: email,
-            status: status,
-            access: access,
-        });
+            status: 0,
+            access: 0,
+        }); 
 
         if (result) {
             return res.status(200).json({
                 status: 'success',
-                message: userService.message,
+                message: await userService.message,
             });
         }
 
         return res.status(404).json({
             status: 'error',
-            message: userService.message,
+            message: await userService.message,
         });
 
     } catch (err) {
         return res.status(500).json({
             status: 'error',
-            message: 'Não foi possível efetuar aa operação',
+            message: 'Não foi possível efetuar aa operação!',
         });
     }
 };

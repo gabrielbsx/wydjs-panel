@@ -2,17 +2,22 @@ const userRepository = require('../repositories/user-repository');
 const userSchema = require('../schemas/users-schema');
 const bcrypt = require('bcryptjs');
 
-module.exports = class userService{
+module.exports = class userService{    
     constructor() {
         this.message = '';
     }
 
-    create(account) {
+    async getMessage() {
+        return this.message;
+    }
+
+    async create(user) {
         try {
-            if (userSchema.validate(account)) {
-                if (!this.getByUsername({ username: account.username })) {
-                    const userData = userRepository.create(account);
-                    if (userData && Object.keys(userData).length > 0) {
+            if (userSchema.validate(user)) {
+                if (!(await this.getByUsername({ username: user.username }))) {
+                    delete user.confirm_password;
+                    const userData = await userRepository.create(user);
+                    if (userData) {
                         this.message = 'Conta criada com sucesso!';
                         return true;
                     } else {
@@ -26,15 +31,16 @@ module.exports = class userService{
             }
             return false;
         } catch (err) {
+            this.message = 'Não foi possível efetuar aa operação!';
             return false;
         }
     }
 
-    getByUsername(user) {
+    async getByUsername(user) {
         try {
             if (userSchema.validate(user)) {
-                const userData = userRepository.read(user);
-                if (userData && Object.keys(userData).length > 0) {
+                const userData = await userRepository.read(user);
+                if (userData) {
                     this.message = 'Conta encontrada com sucesso!';
                     return true;
                 } else {
@@ -49,11 +55,11 @@ module.exports = class userService{
         }
     }
 
-    getByEmail(user) {
+    async getByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                const userData = userRepository.read(user);
-                if (userData && Object.keys(userData).length > 0) {
+                const userData = await userRepository.read(user);
+                if (userData) {
                     this.message = 'Conta encontrada com sucesso';
                     return true;
                 } else {
@@ -68,14 +74,14 @@ module.exports = class userService{
         }
     }
 
-    update(user) {
+    async update(user) {
         try {
             if (userSchema.validate(user)) {
-                const userData = this.getByUsername({ username: user.username });
-                if (userData && Object.keys(userData).length > 0) {
+                const userData = await this.getByUsername({ username: user.username });
+                if (userData) {
                     if (bcrypt.compareSync(user.oldpassword, userData.password)) {
-                        const userUpdate = userRepository.update(user, { username: user.username, });
-                        if (userUpdate && Object.keys(userData).length > 0) {
+                        const userUpdate = await userRepository.update(user, { username: user.username, });
+                        if (userUpdate) {
                             this.message = 'Conta atualizada com sucesso!';
                             return true;
                         } else {
@@ -96,11 +102,11 @@ module.exports = class userService{
         }
     }
 
-    updateByEmail(user) {
+    async updateByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                const userData = userRepository.update(user, { email: user.email, });
-                if (userData && Object.keys(userData).length > 0) {
+                const userData = await userRepository.update(user, { email: user.email, });
+                if (userData) {
                     this.message = 'Conta(s) atualizada(s) com sucesso!';
                     return true;
                 } else { 
@@ -115,11 +121,11 @@ module.exports = class userService{
         }
     }
 
-    deleteByEmail(user) {
+    async deleteByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                const userData = userRepository.deleteByEmail(user);
-                if (userData && Object.keys(userData).length > 0) {
+                const userData = await userRepository.deleteByEmail(user);
+                if (userData) {
                     this.message = 'Conta(s) deletada(s) com sucesso';
                     return true;
                 } else {
