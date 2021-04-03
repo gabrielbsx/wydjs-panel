@@ -25,7 +25,7 @@ exports.create = async (req, res, next) => {
             });
         }
 
-        return res.status(400).json({
+        return res.status(404).json({
             status: 'error',
             message: userService.message,
         });
@@ -53,13 +53,13 @@ exports.getByUsername = async (req, res, next) => {
             return res.status(200).json({
                 status: 'success',
                 auth: true,
-                message: result,
+                message: userService.message,
             });
         }
-        return res.status(400).json({
+        return res.status(404).json({
             status: 'error',
             auth: true,
-            message: 'Não há conta com este email',
+            message: userService.message,
         });
 
     } catch (err) {
@@ -85,10 +85,10 @@ exports.getByEmail = async (req, res, next) => {
             return res.status(200).json({
                 status: 'success',
                 auth: true,
-                message: result,
+                message: userService.message,
             });
         }
-        return res.status(400).json({
+        return res.status(404).json({
             status: 'error',
             auth: true,
             message: 'Não há conta com este email',
@@ -124,7 +124,7 @@ exports.update = async (req, res, next) => {
             });
         }
 
-        return res.status(400).json({
+        return res.status(404).json({
             status: 'error',
             auth: true,
             message: userService.message,

@@ -11,8 +11,9 @@ module.exports = class userService{
         try {
             if (userSchema.validate(account)) {
                 if (!this.getByUsername({ username: account.username })) {
-                    if (userRepository.create(account)) {
-                        this.message = 'Cadastro efetuado com sucesso!';
+                    const userData = userRepository.create(account);
+                    if (userData && Object.keys(userData).length > 0) {
+                        this.message = 'Conta criada com sucesso!';
                         return true;
                     } else {
                         this.message = 'Não foi possível criar a conta!';
@@ -32,9 +33,10 @@ module.exports = class userService{
     getByUsername(user) {
         try {
             if (userSchema.validate(user)) {
-                const user = userRepository.read(user);
-                if (user) {
-                    return user;
+                const userData = userRepository.read(user);
+                if (userData && Object.keys(userData).length > 0) {
+                    this.message = 'Conta encontrada com sucesso!';
+                    return true;
                 } else {
                     this.message = 'Não foi possível encontrar a conta!';
                 }
@@ -50,9 +52,10 @@ module.exports = class userService{
     getByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                const user = userRepository.read(user);
-                if (user) {
-                    return user;
+                const userData = userRepository.read(user);
+                if (userData && Object.keys(userData).length > 0) {
+                    this.message = 'Conta encontrada com sucesso';
+                    return true;
                 } else {
                     this.message = 'Não foi possível encontrar a conta!';
                 }
@@ -69,13 +72,17 @@ module.exports = class userService{
         try {
             if (userSchema.validate(user)) {
                 const userData = this.getByUsername({ username: user.username });
-                if (userData) {
-                    if (bcrypt.compareSync(user.oldpassword, userData.password))
-                    if (userRepository.update(user, { username: user.username, })) {
-                        this.message = 'Conta atualizada com sucesso!';
-                        return true;
+                if (userData && Object.keys(userData).length > 0) {
+                    if (bcrypt.compareSync(user.oldpassword, userData.password)) {
+                        const userUpdate = userRepository.update(user, { username: user.username, });
+                        if (userUpdate && Object.keys(userData).length > 0) {
+                            this.message = 'Conta atualizada com sucesso!';
+                            return true;
+                        } else {
+                            this.message = 'Não foi possível atualizar a conta!';
+                        }
                     } else {
-                        this.message = 'Não foi possível atualizar a conta!';
+                        this.message = 'Senha antiga inválida!';
                     }
                 } else {
                     this.message = 'Usuário inexistente!';
@@ -92,8 +99,9 @@ module.exports = class userService{
     updateByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                if (userRepository.update(user, { email: user.email, })) {
-                    this.message = 'Conta(s) atualizada com sucesso!';
+                const userData = userRepository.update(user, { email: user.email, });
+                if (userData && Object.keys(userData).length > 0) {
+                    this.message = 'Conta(s) atualizada(s) com sucesso!';
                     return true;
                 } else { 
                     this.message = 'Não foi possível atualizar a conta(s)!';
@@ -110,8 +118,9 @@ module.exports = class userService{
     deleteByEmail(user) {
         try {
             if (userSchema.validate(user)) {
-                if (userRepository.deleteByEmail(user)) {
-                    this.message = 'Conta(s) deletada(s) com sucesso!';
+                const userData = userRepository.deleteByEmail(user);
+                if (userData && Object.keys(userData).length > 0) {
+                    this.message = 'Conta(s) deletada(s) com sucesso';
                     return true;
                 } else {
                     this.message = 'Não foi possível deletar a conta(s)!';

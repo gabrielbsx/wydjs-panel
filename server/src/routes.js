@@ -14,7 +14,7 @@ routes.route('/news')
 
 routes.use(authenticate);
 
-routes.route('/users')
+routes.route('/user')
         .post(userController.create)
         .get(userController.getByUsername)
         .put(userController.update)
@@ -24,5 +24,6 @@ routes.route('/news')
         .post(newsController.create)
         .put(newsController.update)
         .delete(newsController.delete);
+
 
 module.exports = routes;
