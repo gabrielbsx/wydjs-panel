@@ -21,19 +21,19 @@ class Users extends Model {
         modelName: "users",
       }
     );
-    this.addHook('beforeSave', async user => {
+    /*this.addHook('beforeCreate', async user => {
       if (user.password) {
         const salt = await bcrypt.genSalt(15);
         user.password = await bcrypt.hash(user.password, salt);
       }
       user.id = v4();
     });
-    this.addHook('beforeUpdate', async user => {
+    this.addHook('beforeSave', async user => {
       if (user.password) {
         const salt = await bcrypt.genSalt(15);
         user.password = await bcrypt.hash(user.password, salt);
       }
-    });
+    });*/
     return this;
   }
 }

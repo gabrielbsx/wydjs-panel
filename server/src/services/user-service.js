@@ -1,6 +1,7 @@
 const userRepository = require('../repositories/user-repository');
-const { authSchema, registerSchema, changeSchema } = require('../schemas/users-schema');
+const isEmail = require('isemail');
 const bcrypt = require('bcryptjs');
+const { v4 } = require('uuid');
 
 module.exports = class userService{    
     constructor() {
@@ -11,27 +12,91 @@ module.exports = class userService{
         return this.message;
     }
 
+    async isValidUsername(username) {
+        try {
+            if (username.match(/^([a-zA-Z0-9]{4,12})$/)) {
+                return true;
+            }
+            this.message = 'Usuário deve conter 4 à 12 caracteres alfa numéricos!';
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async isValidPassword(password) {
+        try {
+            if (password.match(/^([a-zA-Z0-9]{4,12})$/i)) {
+                return true;
+            }
+            this.message = 'Senha deve conter 4 à 12 caracteres alfa numéricos!';
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async isValidEmail(email) {
+        try {
+            if (isEmail.validate(email)) {
+                return true;
+            }
+            this.message = 'E-mail inválido!';
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async isValidStatus(status) {
+        try {
+            if (Number.isInteger(status) && status === 0 && status === 1) {
+                return true;
+            }
+            this.message = 'Status inválido!';
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async isValidAccess(access) {
+        try {
+            if (Number.isInteger(access) && access >= 0 && access <= 3) {
+                return true;
+            }
+            this.message = 'Access inválido!';
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
     async create(user) {
         try {
-            if (registerSchema.validate(user)) {
-                if (!(await this.getByUsername({ username: user.username }))) {
-                    delete user.confirm_password;
-                    const userData = await userRepository.create(user);
-                    if (userData) {
-                        this.message = 'Conta criada com sucesso!';
-                        return true;
-                    } else {
-                        this.message = 'Não foi possível criar a conta!';
+            if (await this.isValidUsername(user.username)) {
+                if (await this.isValidPassword(user.password)) {
+                    if (await this.isValidPassword(user.password)) {
+                        if (await this.isValidPassword(user.confirm_password)) {
+                            if (await this.isValidStatus(user.status) && await this.isValidAccess(user.access)) {
+                                if (!(await this.getByUsername({ username: this.username }))) {
+                                    delete user.confirm_password;
+                                    user.id = v4();
+                                    user.password = await this.getPasswordHash(user.password);
+                                    const userData = await userRepository.create(user);
+                                    if (userData) {
+                                        this.message = 'Conta criada com sucesso!';
+                                        return true;
+                                    } else this.message = 'Não foi possível criar a conta!';
+                                } else this.message = 'Conta existente!';
+                            }
+                        }
                     }
-                } else {
-                    this.message = 'Conta existente!';
                 }
-            } else {
-                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
-            this.message = 'Não foi possível efetuar aa operação!';
+            this.message = 'Não foi possível efetuar a operação!';
             return false;
         }
     }
@@ -40,126 +105,71 @@ module.exports = class userService{
         try {
             const password = user.password;
             delete user.password;
-            const result = await this.getByUsername(user);
-            if (result) {
-                if ((await bcrypt.compare(password, result.password))) {
-                    this.message = 'Login efetuado com sucesso!';
-                    return true;
-                } else {
-                    this.message = 'Não foi possível efetuar o login!';
+            if (await this.isValidUsername(user.username)) {
+                if (await this.isValidPassword(user.password)) {
+                    const result = await this.getByUsername(user);
+                    if (result) {
+                        if (await bcrypt.compare(password, result.password)) {
+                            this.message = 'Login efetuado com sucesso!';
+                            delete result.password;
+                            return result;
+                        } else this.message = 'Não foi possível efetuar o login!';
+                    } else this.message = 'Conta inexistente!';
                 }
-            } else {
-                this.message = 'Conta inexistente!';
             }
             return false;
         } catch (err) {
-            console.log(err);
-            this.message = 'Erro interno!';
-            return false;
-        }
-    }
-
-    async getByUsername(user) {
-        try {
-            if (authSchema.validate(user)) {
-                const userData = await userRepository.read(user);
-                if (userData) { 
-                    this.message = 'Conta encontrada com sucesso!';
-                    return userData;
-                } else {
-                    this.message = 'Não foi possível encontrar a conta!';
-                }
-            } else {
-                this.message = 'Conta inválida!';
-            }
-            return false;
-        } catch (err) {
-            return false;
-        }
-    }
-
-    async getByEmail(user) {
-        try {
-            if (changeSchema.validate(user)) {
-                const userData = await userRepository.read(user);
-                if (userData) {
-                    this.message = 'Conta encontrada com sucesso';
-                    return true;
-                } else {
-                    this.message = 'Não foi possível encontrar a conta!';
-                }
-            } else {
-                this.message = 'Conta inválida!';
-            }
-            return false;
-        } catch (err) {
+            this.message = 'Não foi possível efetuar a operação!';
             return false;
         }
     }
 
     async update(user) {
         try {
-            if (changeSchema.validate(user)) {
-                const userData = await this.getByUsername({ username: user.username });
-                if (userData) {
-                    if (await bcrypt.compare(user.oldpassword, userData.password)) {
-                        const userUpdate = await userRepository.update(user, { username: user.username, });
-                        if (userUpdate) {
-                            this.message = 'Conta atualizada com sucesso!';
-                            return true;
-                        } else {
-                            this.message = 'Não foi possível atualizar a conta!';
-                        }
-                    } else {
-                        this.message = 'Senha antiga inválida!';
-                    }
-                } else {
-                    this.message = 'Usuário inexistente!';
+            if (await this.isValidUsername(user.username)) {
+                if (await this.isValidPassword(user.oldpassword)) {
+                    const userData = await this.getByUsername({ username: user.username });
+                    if (userData) {
+                        if (await bcrypt.compare(user.oldpassword, userData.password)) {
+                            const username = user.username;
+                            delete user.username;
+                            user.password = await this.getPasswordHash(user.password);
+                            const userUpdate = await userRepository.update(user, { username: username, });
+                            if (userUpdate) {
+                                this.message = 'Conta atualizada com sucesso!';
+                                return true;
+                            } else this.message = 'Não foi possível atualizar a conta!';
+                        } else this.message = 'Senha antiga inválida!';
+                    } else this.message = 'Usuário inexistente!';
                 }
-            } else {
-                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
+            this.message = 'Não foi possível efetuar a operação!';
             return false;
         }
     }
 
-    async updateByEmail(user) {
+    async delete(user) {
         try {
-            if (changeSchema.validate(user)) {
-                const userData = await userRepository.update(user, { email: user.email, });
+            if (await this.isValidUsername(user.username)) {
+                const userData = await userRepository.delete(user);
                 if (userData) {
-                    this.message = 'Conta(s) atualizada(s) com sucesso!';
+                    this.message = 'Conta deletada com sucesso';
                     return true;
-                } else { 
-                    this.message = 'Não foi possível atualizar a conta(s)!';
+                } else {
+                    this.message = 'Não foi possível deletar a conta!';
                 }
-            } else {
-                this.message = 'Conta inválida!';
             }
             return false;
         } catch (err) {
+            this.message = 'Não foi possível efetuar a operação!';
             return false;
         }
     }
 
-    async deleteByEmail(user) {
-        try {
-            if (changeSchema.validate(user)) {
-                const userData = await userRepository.deleteByEmail(user);
-                if (userData) {
-                    this.message = 'Conta(s) deletada(s) com sucesso';
-                    return true;
-                } else {
-                    this.message = 'Não foi possível deletar a conta(s)!';
-                }
-            } else {
-                this.message = 'Conta inválida!';
-            }
-            return false;
-        } catch (err) {
-            return false;
-        }
+    async getPasswordHash(password) {
+        const salt = await bcrypt.genSalt(15);
+        return await bcrypt.hash(password, salt);
     }
 };

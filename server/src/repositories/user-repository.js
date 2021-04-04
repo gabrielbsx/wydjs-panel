@@ -19,10 +19,10 @@ exports.read = async (user) => {
     }
 };
 
-exports.update = async (user, whereParam) => {
+exports.update = async (user, where) => {
     try {
         return await userModel.update(user, {
-            where: whereParam,
+            where: where,
         });
     } catch (err) {
         return false;
@@ -31,7 +31,7 @@ exports.update = async (user, whereParam) => {
 
 exports.delete = async (user) => {
     try {
-        return await userModel.delete({
+        return await userModel.destroy({
             where: user,
         });
     } catch (err) {

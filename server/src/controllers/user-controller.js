@@ -53,6 +53,7 @@ exports.read = async (req, res, next) => {
                 status: 'success',
                 auth: true,
                 message: userService.message,
+                user: result,
             });
         }
         return res.status(404).json({
@@ -141,7 +142,7 @@ exports.update = async (req, res, next) => {
 
         const userService = new UserService();
 
-        const user = userService.update({
+        const user = await userService.update({
             username: username,
             password: password,
             confirm_password: confirm_password,
@@ -172,11 +173,28 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
     try {
-        return res.status(200).json({
-            status: 'success',
-            auth: true,
-            message: 'Usuário deletado com sucesso!',
+        const { username } = req.body;
+
+        const userService = new UserService();
+
+        const user = await userService.delete({
+            username: username,
         });
+
+        if (user) {
+            return res.status(200).json({
+                status: 'success',
+                auth: true,
+                message: userService.message,
+            });
+        }
+
+        return res.status(404).json({
+            status: 'error',
+            auth: true,
+            message: userService.message,
+        });
+
     } catch (err) {
         return res.status(500).json({
             status: 'error',
