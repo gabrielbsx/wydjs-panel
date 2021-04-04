@@ -1,4 +1,6 @@
 const newsRepository = require('../repositories/news-repository');
+const userRepository = require('../repositories/user-repository');
+const { v4 } = require('uuid');
 
 module.exports = class newsService{
     slugRules = /^([a-zA-Z0-9_-]{10,50})$/;
@@ -7,114 +9,96 @@ module.exports = class newsService{
         this.message = '';
     }
 
-    setTitle(title) {
+    async isValidTitle(title) {
         try {
-            if (title.length > 10 && title.length < 100) {
-                this.title = title;
+            if (title.length >= 10 && title.length <= 100) {
                 return true;
             }
             this.message = 'Título deve conter entre 10 a 100 caracteres!';
             return false;
         } catch (err) {
-            this.message = err.toString();
             return false;
         }
     }
 
-    setSlug(slug) {
+    async isValidSlug(slug) {
         try {
-            if (slug.length > 10 && slug.length < 50) {
-                this.slug = slug;
-                return true;
+            if (slug.length >= 10 && slug.length <= 50) {
+                if (slug.match(/^([a-zA-Z0-9_-])$/i)) {
+                    return true;
+                }
             }
             this.message = 'Slug deve conter entre 10 a 50 caracteres!';
             return false;
         } catch (err) {
-            this.message = err.toString();
             return false;
         }
     }
 
-    setCategory(category) {
+    async isValidCategory(category) {
         try {
             if (category > 0 && category < 5) {
-                this.category = category;
                 return true;
             }
             this.message = 'Categoria inválida!';
             return false;
         } catch (err) {
-            this.message = err.toString();
             return false;
         }
     }
 
-    setContent(content) {
+    async isValidUserId(id) {
         try {
-            return (this.content = content);
-        } catch (err) {
-            this.message = err.toString();
-            return false;
-        }
-    }
-
-    setName(name) {
-        try {
-            if (name.length > 4 && name.length < 50) {
-                this.name = name;
-                return true;
+            const user = await userRepository.read({id : id});
+            if (user) {
+                return user;
             }
-            this.message = 'O nome deve conter entre 4 a 50 caracteres!';
+            this.message = 'Usuário inválido!';
             return false;
         } catch (err) {
-            this.message = err.toString();
             return false;
         }
     }
 
-    setId(id) {
-        try {
-            if (typeof id === 'number') {
-                this.id = id;
-                return true;
-            }
-            return false;
-        } catch (err) {
-            this.message = err.toString();
-            return false;
-        }
-    }
-
-    getMessage() {
+    async getMessage() {
         return this.message;
     }
 
-    create(title, slug, name, category, content) {
+    async create(news) {
         try {
-            if (this.setTitle(title) && this.setSlug(slug) && this.setName(name) && this.setCategory(category) && this.setContent(content)) {
-                if (newsRepository.create(this.title, this.slug, this.category, this.content, this.name)) {
-                    this.message = 'Notícia criada com sucesso!';
-                    return true;
+            if (await this.isValidTitle(news.title)) {
+                if (await this.isValidCategory(news.category)) {
+                    if (await this.isValidUserId(news.userId)) {
+                        if (await this.isValidSlug(news.slug)) {
+                            news.id = v4();
+                            this.message = 'Notícia criada com sucesso!';
+                            return await newsRepository.create(news);
+                        }
+                    }
                 }
             }
             return false;
         } catch (err) {
-            this.message = err.toString();
             return false;
         }
     }
 
-    updateById(id, title, slug, name, category, content) {
+    async updateById(news) {
         try {
-            if (this.setId(id) && this.setTitle(title) && this.setSlug(slug) && this.setName(name) && this.setCaategory(category) && this.setContent(content)) {
-                if (newsRepository.updateById(id, title, slug, category, content, name)) {
-                    this.message = 'Notícia atualizada comn sucesso!';
-                    return true;
+            if (await this.isValidTitle(news.title)) {
+                if (await this.isValidCategory(news.category)) {
+                    if (await this.isValidSlug(news.slug)) {
+                        if (await this.isValidUserId(news.userId)) {
+                            id = news.id;
+                            delete news.id;
+                            this.message = 'Notícia atualizada com sucesso!';
+                            return await newsRepository.update(news, {id: id});
+                        }
+                    }
                 }
-                return false;
             }
+            return false;
         } catch (err) {
-            this.message = err.toString();
             return false;
         }
     }

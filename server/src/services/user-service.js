@@ -24,6 +24,18 @@ module.exports = class userService{
         }
     }
 
+    async isValidName(name) {
+        try {
+            if (name.length > 3 && name.length <= 50) {
+                return true;
+            }
+            this.message = 'Nome inválido!';
+            return false;
+        } catch (err) {
+            return false;
+        }
+    }
+
     async isValidPassword(password) {
         try {
             if (password.match(/^([a-zA-Z0-9]{4,12})$/i)) {
@@ -78,17 +90,19 @@ module.exports = class userService{
                 if (await this.isValidPassword(user.password)) {
                     if (await this.isValidPassword(user.password)) {
                         if (await this.isValidPassword(user.confirm_password)) {
-                            if (await this.isValidStatus(user.status) && await this.isValidAccess(user.access)) {
-                                if (!(await this.getByUsername({ username: this.username }))) {
-                                    delete user.confirm_password;
-                                    user.id = v4();
-                                    user.password = await this.getPasswordHash(user.password);
-                                    const userData = await userRepository.create(user);
-                                    if (userData) {
-                                        this.message = 'Conta criada com sucesso!';
-                                        return true;
-                                    } else this.message = 'Não foi possível criar a conta!';
-                                } else this.message = 'Conta existente!';
+                            if (await this.isValidName(user.name)) {
+                                if (await this.isValidStatus(user.status) && await this.isValidAccess(user.access)) {
+                                    if (!(await this.getByUsername({ username: this.username }))) {
+                                        delete user.confirm_password;
+                                        user.id = v4();
+                                        user.password = await this.getPasswordHash(user.password);
+                                        const userData = await userRepository.create(user);
+                                        if (userData) {
+                                            this.message = 'Conta criada com sucesso!';
+                                            return true;
+                                        } else this.message = 'Não foi possível criar a conta!';
+                                    } else this.message = 'Conta existente!';
+                                }
                             }
                         }
                     }
@@ -171,5 +185,18 @@ module.exports = class userService{
     async getPasswordHash(password) {
         const salt = await bcrypt.genSalt(15);
         return await bcrypt.hash(password, salt);
+    }
+
+    async getByUsername(user) {
+        try {
+            const userData = await userRepository.read(user);
+            if (userData) {
+                this.message = 'Conta encontrada com sucesso!';
+                return userData;
+            } else this.message = 'Não foi possível encontrar a conta!';
+            return false;
+        } catch (err) {
+            return false;
+        }
     }
 };
