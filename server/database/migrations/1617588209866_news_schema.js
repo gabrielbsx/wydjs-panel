@@ -13,7 +13,8 @@ class NewsSchema extends Schema {
       table.string('slug').notNullable().unique()
       table.text('content')
       table.string('description').notNullable()
-      table.integer('category').notNullable().unsigned()
+      table.integer('category').unsigned().references('id')
+        .inTable('categories').onUpdate('CASCADE').onDelete('CASCADE')
       table.timestamps()
     })
   }

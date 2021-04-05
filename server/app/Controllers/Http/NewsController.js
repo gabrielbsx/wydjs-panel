@@ -170,6 +170,22 @@ class NewsController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+    try {
+      const news = await News.query().where('id', params.id).first()
+      if(!news) {
+          return response.status(404).json({
+            message: 'Nenhuma notícia necontrada!',
+          });
+      }
+      await news.delete();
+      return response.status(200).json({
+        message: 'Notícia deletada com sucesso!',
+      });
+    } catch (err) {
+      return response.status(500).json({
+        error: `Error: ${err.message}`,
+      });
+    }
   }
 }
 

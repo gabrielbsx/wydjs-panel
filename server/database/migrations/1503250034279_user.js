@@ -11,8 +11,10 @@ class UserSchema extends Schema {
       table.string('username', 12).notNullable().unique()
       table.string('email', 254).notNullable()
       table.string('password', 60).notNullable()
-      table.integer('access').notNullable()
-      table.integer('status').notNullable()
+      table.integer('access').unsigned().references('id')
+        .inTable('accesses').onUpdate('CASCADE').onDelete('CASCADE')
+      table.integer('status').unsigned().references('id')
+        .inTable('statuses').onUpdate('CASCADE').onDelete('CASCADE')
       table.timestamps()
     })
   }
