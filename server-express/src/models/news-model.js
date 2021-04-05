@@ -17,6 +17,10 @@ class News extends Model {
     });
     return this;
   }
+
+  static associate(models) {
+    this.belongsToMany(model.User, { foreignKey: 'id_user', as: 'owner' })
+  }
 }
   
 module.exports = News;

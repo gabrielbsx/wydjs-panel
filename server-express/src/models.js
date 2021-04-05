@@ -7,5 +7,6 @@ const conn = new Sequelize(dbConfig);
 
 userModel.init(conn);
 newsModel.init(conn);
+userModel.associate(conn.models);
 
 module.exports = conn;

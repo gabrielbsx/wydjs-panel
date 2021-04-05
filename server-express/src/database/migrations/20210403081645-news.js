@@ -17,6 +17,7 @@ module.exports = {
       slug: {
         type: Sequelize.STRING(100),
         allowNull: false,
+        unique: true,
       },
       content: {
         type: Sequelize.TEXT,
@@ -30,12 +31,12 @@ module.exports = {
         type: Sequelize.INTEGER(1),
         allowNull: false,
       },
-      created_at: {
+      createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
       }
     });

@@ -8,12 +8,10 @@ exports.create = async (news) => {
     }
 };
 
-exports.updateById = async (news) => {
+exports.updateById = async (news, where) => {
     try {
         return await newsModel.update(news, {
-            where: {
-                id: news.id,
-            },
+            where: where,
         });
     } catch (err) {
         return false;
@@ -23,9 +21,7 @@ exports.updateById = async (news) => {
 exports.deleteById = async (news) => {
     try {
         return await userModel.delete({
-            where: {
-                id: news.id,
-            },
+            where: news,
         });
     } catch (err) {
         return false;

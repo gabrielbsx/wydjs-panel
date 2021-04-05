@@ -68,7 +68,7 @@ module.exports = class newsService{
         try {
             if (await this.isValidTitle(news.title)) {
                 if (await this.isValidCategory(news.category)) {
-                    if (await this.isValidUserId(news.userId)) {
+                    if (await this.isValidUserId(news.id_user)) {
                         if (await this.isValidSlug(news.slug)) {
                             news.id = v4();
                             this.message = 'Notícia criada com sucesso!';
