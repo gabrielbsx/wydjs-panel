@@ -4,6 +4,10 @@
 const Model = use('Model')
 
 class Status extends Model {
+
+  users () {
+    return this.hasMany('App/Models/User');
+  }
 }
 
 module.exports = Status

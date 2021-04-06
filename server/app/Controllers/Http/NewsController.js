@@ -37,9 +37,15 @@ class NewsController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const news = Database.select('title', 'description', 'slug', 'category').from('news');//.where('user_id', auth.user.id);
+    try {
+      const news = Database.select('title', 'description', 'slug', 'category').from('news');//.where('user_id', auth.user.id);
 
-    return news;
+      return news;
+    } catch (err) {
+      return response.status(500).json({
+        error: `Error: ${err.message}`,
+      })
+    }
   }
 
   /**
@@ -136,6 +142,19 @@ class NewsController {
     try {
       const { title, description, content, category, slug } = request.all();
 
+      const validation = await validateAll(request.all(), {
+        title: 'required|max:255',
+        description: 'required|max:255',
+        category: 'required|min:0|max:5',
+        slug: 'required|max:255|unique:news|regex:^[a-z][-a-z0-9]*$',
+      }, this.errMessage);
+
+      if (validation.fails()) {
+        return response.status(401).json({
+          message: validation.messages(),
+        });
+      }
+
       const news = News.query().where('id', params.id).first();
 
       if (!news) {
@@ -171,7 +190,7 @@ class NewsController {
    */
   async destroy ({ params, request, response }) {
     try {
-      const news = await News.query().where('id', params.id).first()
+      const news = await News.query().where('id', params.id).first();
       if(!news) {
           return response.status(404).json({
             message: 'Nenhuma notícia necontrada!',

@@ -56,6 +56,17 @@ class UserController {
     try {
       const { username, password } = request.all();
 
+      const validation = await validateAll(request.all(), {
+        username: 'required|min:4|max:12|alpha_numeric',
+        password: 'required|min:4|max:12|alpha_numeric'
+      }, this.errMessage);
+
+      if (validation.fails()) {
+        return response.status(401).json({
+          message: validation.messages(),
+        });
+      }
+
       const validateToken = await auth.attempt(username, password);
 
       return validateToken;
@@ -67,4 +78,4 @@ class UserController {
   }
 }
 
-module.exports = UserController
+module.exports = UserController;

@@ -8,7 +8,7 @@ const Hash = use('Hash')
 
 class User extends Model {
   static boot () {
-    super.boot()
+    super.boot();
 
     /**
      * A hook to hash the user password before saving
@@ -18,7 +18,7 @@ class User extends Model {
       if (userInstance.dirty.password) {
         userInstance.password = await Hash.make(userInstance.password)
       }
-    })
+    });
   }
 
   /**
@@ -32,8 +32,20 @@ class User extends Model {
    * @return {Object}
    */
   tokens () {
-    return this.hasMany('App/Models/Token')
+    return this.hasMany('App/Models/Token');
+  }
+
+  news () {
+    return this.hasMany('App/Models/News');
+  }
+
+  status () {
+    return this.hasOne('App/Models/Status');
+  }
+
+  access () {
+    return this.hasOne('App/Models/Access');
   }
 }
 
-module.exports = User
+module.exports = User;
