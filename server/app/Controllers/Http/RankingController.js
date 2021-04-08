@@ -8,6 +8,23 @@
  * Resourceful controller for interacting with rankings
  */
 class RankingController {
+
+  errMessage = {
+    'nick.required': 'Nick obrigatório!',
+    'nick.max': 'Nick deve conter no máximo 16 caracteres!',
+    'nick.alpha_numeric': 'Nick deve conter apenas caracteres alfa numéricos!',
+    'level.required': 'Level obrigatório!',
+    'level.integer': 'Level deve conter apenas número inteiros',
+    'class.required': 'Classe obrigatória!',
+    'class.integer': 'Classe deve conter apenas número inteiros',
+    'evolution.required': 'Evolução obrigatório!',
+    'evolution.integer': 'Evolução deve conter apenas número inteiros',
+    'guild.required': 'Guild obrigatório!',
+    'guild.integer': 'Guild deve conter apenas número inteiros',
+    'kingdom.required': 'Reino obrigatório!',
+    'kingdom.integer': 'Reino deve conter apenas número inteiros',
+  };
+
   /**
    * Show a list of all rankings.
    * GET rankings
@@ -41,6 +58,26 @@ class RankingController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
+    try {
+      const validation = await validateAll(request.all(), {
+        'nick': 'required|max:16|alpha_numeric',
+        'level': 'required|integer',
+        'class': 'required|integer',
+        'evolution': 'required|integer',
+        'guild': 'required|integer',
+        'kingdom': 'required|integer',
+      }, this.errMessage);
+
+      const data = request.only(['nick', 'level', 'class', 'evolution', 'guild', 'kingdom']);
+
+      const ranking = await Ranking.create(data);
+
+      return ranking;
+    } catch (err) {
+      response.status(500).json({
+        error: `Error: ${err.message}`,
+      });
+    }
   }
 
   /**
