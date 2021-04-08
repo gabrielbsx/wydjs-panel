@@ -1,5 +1,9 @@
 'use strict'
 
+const { validateAll } = use('validator');
+const Ranking = use('App/Models/Ranking');
+const Database = use('Database');
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -35,6 +39,14 @@ class RankingController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+    try {
+      const ranking = Database().select('*').from('ranking');
+      return ranking;
+    } catch (err) {
+      return response.status(500).json({
+        error: `Error: ${err.message}`,
+      });
+    }
   }
 
   /**
@@ -90,6 +102,15 @@ class RankingController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const ranking = await Ranking.query().where('id', params.id).first();
+
+    if (!ranking) {
+      return response.status(404).json({
+        message: 'Não foi possível encontrar o player',
+      });
+    }
+
+    return ranking;
   }
 
   /**
@@ -124,6 +145,18 @@ class RankingController {
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+  }
+
+  /**
+   * Delete all ranking.
+   * DELETE rankings
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async trunace ({ request, response }) {
+    return await Ranking.truncate();
   }
 }
 
