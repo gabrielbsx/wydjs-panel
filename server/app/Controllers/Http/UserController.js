@@ -42,6 +42,10 @@ class UserController {
 
       const user = await User.create(data);
 
+      if (user) {
+        //escrever conta
+      }
+
       return user;
 
     } catch (err) {
