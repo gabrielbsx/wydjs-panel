@@ -1,0 +1,14 @@
+<% const messages = getMessages() %>
+<% if (messages.notify) { %>
+    <% messages.notify.forEach((value) => { %>
+        <% if (value.type === 'danger') { %>
+            <div class="card-body h6 text-center">
+                <% Object.values(value.message).forEach((message) => { %>
+                    <div class="alert alert-<%= value.type %>">
+                        <%= message.message %>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    <% }) %>
+<% } %>
