@@ -1,7 +1,9 @@
 const Joi = require('joi');
-const userModel = require('../models/news-model');
+const userModel = require('../models/users-model');
 const userSchema =  require('../schemas/users-schema');
-const gameController = new require('./game-controller');
+const gameController = new (require('./game-controller'))();
+const bcrypt = require("bcryptjs");
+const { v4 } = require('uuid');
 
 exports.login = async (req, res, next) => {
     try {
@@ -51,6 +53,11 @@ exports.create = async (req, res, next) => {
                 await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
                 if (await gameController.userExists(username) === false) {
                     delete user.password_confirm;
+                    user.id = v4();
+                    user.access = 0;
+                    user.status = 0;
+                    user.created_at = new Date();
+                    user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
                     if (await userModel.create(user)) {
                         if (await gameController.createAccount(username, password)) {
                             req.flash('notify', {
@@ -60,6 +67,7 @@ exports.create = async (req, res, next) => {
                         } else {
                             await userModel.destroy({
                                 where: {
+                                    id: user.id,
                                     name: name,
                                     username: username,
                                     email: email,

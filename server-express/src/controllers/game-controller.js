@@ -7,28 +7,16 @@ module.exports = class Game {
     dbsrv = this.game + 'DBSrv/run/';
     tmsrv = this.game + 'TMSrv/run/';
     common = this.game + 'Common/';
-    account = 'account/';
-    importDonate = 'importDonate/';
-    importPass = 'importPass/';
-    importItem = 'importItem/';
-    log = 'logs/';
+    account = this.dbsrv + 'account/';
+    importDonate = this.common + 'importDonate/';
+    importPass = this.common + 'importPass/';
+    importItem = this.common + 'importItem/';
+    logCreateAccount = this.common + 'logs/account/';
+    logImportPass = this.common + 'logs/ImportPass/';
+    logImportDonate = this.common + 'logs/ImportDonate/';
+    logImportItem = this.common + 'logs/ImportItem/';
 
-    constructor () {
-        this.path = {
-            game: game,
-            dbsrv: dbsrv,
-            tmsrv: tmsrv,
-            common: common,
-            account: dbsrv + account,
-            importDonate: common + importDonate,
-            importPass: common + importPass,
-            importItem: common + importItem,
-            logCreateAccount: common + log + account,
-            logImportPass: common + log + importPass,
-            logImportDonate: common + log + importDonate,
-            logImportItem: common + log + importItem,
-        };
-    }
+    constructor () {}   
 
     async getInitial(username) {
         try {
@@ -43,8 +31,8 @@ module.exports = class Game {
 
     async userExists(username) {
         try {
-            initial = await this.getInitial(username);
-            path = `${this.account + initial}/${username}`;
+            var initial = await this.getInitial(username);
+            var path = `${this.account + initial}/${username}`;
             const user = await userModel.findOne({
                 where: {
                     username: username,
@@ -58,17 +46,17 @@ module.exports = class Game {
             return false;
         }
     }
-    
+
     async createAccount(username, password) {
         try {
-            initial = await this.getInitial(username);
-            path = `${this.account + initial}/${username}`;
+            var initial = await this.getInitial(username);
+            var path = `${this.account + initial}/${username}`;
 
             var account = fs.readFileSync(this.binaryAccount);
             username = Buffer.from(username, undefined);
             password = Buffer.from(password, undefined);
 
-            for (i = 0; i < username.length; i++) {
+            for (var i = 0; i < username.length; i++) {
                 account[i] = username[i];
             }
 
@@ -76,11 +64,9 @@ module.exports = class Game {
                 account[(i + 16)] = password[i];
             }
 
-            if (fs.writeFileSync(path, account)) {
-                return true;
-            }
+            fs.writeFileSync(path, account);
 
-            return false;
+            return true;
         } catch (err) {
             return false;
         }
