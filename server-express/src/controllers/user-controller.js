@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const userSchema =  require('../schemas/users-schema');
+const gameController = new require('./game-controller');
 
 exports.login = async (req, res, next) => {
     try {
@@ -47,10 +48,24 @@ exports.create = async (req, res, next) => {
                     email: email,
                 };
                 await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
-                req.flash('notify', {
-                    type: 'success',
-                    message: 'Cadastro efetuado com sucesso!',
-                });
+                if (await gameController.userExists(username) === false) {
+                    if (await gameController.createUser(username, password)) {
+                        req.flash('notify', {
+                            type: 'success',
+                            message: 'Cadastro efetuado com sucesso!',
+                        });
+                    } else {
+                        req.flash('notify', {
+                            type: 'danger',
+                            message: 'Não foi possível cadastrar a conta!',
+                        });
+                    }
+                } else {
+                    req.flash('notify', {
+                        type: 'danger',
+                        message: 'Conta existente!',
+                    });
+                }
             } catch (err) {
                 req.flash('notify', {
                     type: 'danger',
