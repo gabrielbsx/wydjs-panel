@@ -5,25 +5,18 @@ const homeController = require('./controllers/home-controller');
 const userController = require('./controllers/user-controller');
 const newsController = require('./controllers/news-controller');
 
-const authenticate = require('./middlewares/authenticate-middleware');
-
 routes.get('/', homeController);
 
-routes.route('/news')
-        .get(newsController.read);
+routes.route('/login')
+        .get(userController.login)
+        .post(userController.read);
 
-routes.use(authenticate);
+routes.route('/register')
+        .get(userController.register)
+        .post(userController.create);
 
-routes.route('/user')
-        .post(userController.create)
-        .get(userController.read)
-        .put(userController.update)
-        .delete(userController.delete);
-
-routes.route('/news')
-        .post(newsController.create)
-        .put(newsController.update)
-        .delete(newsController.delete);
-
+routes.route('/recovery')
+        .get(userController.recovery)
+        .post(userController.get);
 
 module.exports = routes;

@@ -1,205 +1,72 @@
-const UserService = require('../services/user-service');
+exports.login = async (req, res, next) => {
+    try {
+        if (!req.session.user) {
+            return res.status(200).render('dashboard/pages/login');
+        }
+        return res.redirect('/');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/internalError');
+    }
+};
+
+exports.register = async (req, res, next) => {
+    try {
+        if (!req.session.user) {
+            return res.status(200).render('dashboard/pages/register');
+        }
+        return res.redirect('/');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/internalError');
+    }
+}
+
+exports.recovery = async (req, res, next) => {
+    try {
+        if (!req.session.user) {
+            return res.status(200).render('dashboard/pages/recovery');
+        }
+        return res.redirect('/');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/internalError');
+    }
+}
 
 exports.create = async (req, res, next) => {
     try {
-
-        const { name, username, password, email, confirm_password } = req.body;
-
-        const userService = new UserService();
-
-        var result = await userService.create({
-            name: name,
-            username: username,
-            password: password,
-            confirm_password: confirm_password,
-            email: email,
-            status: 0,
-            access: 0,
-        }); 
-
-        if (result) {
-            return res.status(200).json({
-                status: 'success',
-                message: await userService.message,
-            });
+        if (!req.session.user) {
+            return res.redirect('/register');
         }
-
-        return res.status(404).json({
-            status: 'error',
-            message: await userService.message,
-        });
-
+        return res.redirect('/');
     } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: 'Não foi possível efetuar aa operação!',
-        });
+        return res.status(500).render('dashboard/pages/internalError');
     }
-};
+}
 
 exports.read = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-
-        const userService = new UserService();
-
-        var result = await userService.read({
-            username: username,
-            password: password,
-        });
-
-        if (result) {
-            return res.status(200).json({
-                status: 'success',
-                auth: true,
-                message: userService.message,
-                user: result,
-            });
+        if (!req.session.user) {
+            if (true) {
+                res.locals.user = {
+                    username: 'kentaro',
+                };
+                return res.redirect('/');
+            }
         }
-        return res.status(404).json({
-            status: 'error',
-            auth: true,
-            message: userService.message,
-        });
+        return res.redirect('/login');
     } catch (err) {
-        console.log(err);   
-        return res.status(500).json({
-            status: 'error',
-            auth: true,
-            message: 'Não foi possível efetuar a operação!',
-        });
+        return res.status(500).render('dashboard/pages/internalError');
     }
-};
+}
 
-exports.getByUsername = async (req, res, next) => {
+exports.get = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
-
-        const userService = new UserService();
-
-        var result = await userService.read({
-            username: username,
-            password: password,
-        });
-
-        if (result) {
-            return res.status(200).json({
-                status: 'success',
-                auth: true,
-                message: userService.message,
-            });
+        if (!req.session.user) {
+            if (true) {
+                return res.redirect('/login');
+            }
         }
-        return res.status(404).json({
-            status: 'error',
-            auth: true,
-            message: userService.message,
-        });
-
+        return res.redirect('/recovery');
     } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            auth: true,
-            message: 'Não foi possível efetuar a operação!',
-        });
-    }
-};
-
-exports.getByEmail = async (req, res, next) => {
-    try {
-        const { email } = req.body;
-
-        const userService = new UserService();
-
-        var result = userService.getByEmail({
-            email: email,
-        });
-
-        if (result) {
-            return res.status(200).json({
-                status: 'success',
-                auth: true,
-                message: userService.message,
-            });
-        }
-        return res.status(404).json({
-            status: 'error',
-            auth: true,
-            message: 'Não há conta com este email',
-        });
-
-    } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            auth: true,
-            message: 'Não foi possível efetuar a operação!',
-        });
-    }
-};
-
-exports.update = async (req, res, next) => {
-    try {
-        const { username, password, confirm_password, oldpassword } = req.body;
-
-        const userService = new UserService();
-
-        const user = await userService.update({
-            username: username,
-            password: password,
-            confirm_password: confirm_password,
-            oldpassword: oldpassword,
-        });
-
-        if (user) {
-            return res.status(200).json({
-                status: 'success',
-                auth: true,
-                message: userService.message,
-            });
-        }
-
-        return res.status(404).json({
-            status: 'error',
-            auth: true,
-            message: userService.message,
-        });
-    } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            auth: true,
-            message: 'Não foi possível efetuar a operação!',
-        });
-    }
-};
-
-exports.delete = async (req, res, next) => {
-    try {
-        const { username } = req.body;
-
-        const userService = new UserService();
-
-        const user = await userService.delete({
-            username: username,
-        });
-
-        if (user) {
-            return res.status(200).json({
-                status: 'success',
-                auth: true,
-                message: userService.message,
-            });
-        }
-
-        return res.status(404).json({
-            status: 'error',
-            auth: true,
-            message: userService.message,
-        });
-
-    } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            auth: true,
-            message: 'Não foi possível efetuar a operação',
-        });
+        return res.status(500).render('dashboard/pages/internalError');
     }
 };
