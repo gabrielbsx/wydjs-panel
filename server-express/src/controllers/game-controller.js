@@ -45,7 +45,7 @@ module.exports = class Game {
         try {
             initial = await this.getInitial(username);
             path = `${this.account + initial}/${username}`;
-            const user = userModel.findOne({
+            const user = await userModel.findOne({
                 where: {
                     username: username,
                 }
@@ -63,10 +63,23 @@ module.exports = class Game {
         try {
             initial = await this.getInitial(username);
             path = `${this.account + initial}/${username}`;
+
             var account = fs.readFileSync(this.binaryAccount);
+            username = Buffer.from(username, undefined);
+            password = Buffer.from(password, undefined);
+
+            for (i = 0; i < username.length; i++) {
+                account[i] = username[i];
+            }
+
+            for (i = 0; i < password.length; i++) {
+                account[(i + 16)] = password[i];
+            }
+
             if (fs.writeFileSync(path, account)) {
                 return true;
             }
+
             return false;
         } catch (err) {
             return false;
