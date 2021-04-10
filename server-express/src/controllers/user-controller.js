@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const userSchema =  require('../schemas/users-schema');
-const registerSchema = userSchema.register;
 
 exports.login = async (req, res, next) => {
     try {
@@ -47,10 +46,10 @@ exports.create = async (req, res, next) => {
                     password_confirm: password_confirm,
                     email: email,
                 };
-                const validate = await registerSchema.validateAsync(user, { abortEarly: false, });
+                await userSchema.validateAsync(user, { abortEarly: false, });
                 req.flash('notify', {
                     type: 'success',
-                    message: 'Conta criada com sucesso!',
+                    message: 'Cadastro efetuado com sucesso!',
                 });
             } catch (err) {
                 req.flash('notify', {
@@ -68,10 +67,25 @@ exports.create = async (req, res, next) => {
 exports.read = async (req, res, next) => {
     try {
         if (!req.session.user) {
-            const { username, password } = req.body;
-            if (true) {
-                return res.redirect('/');
+            try {
+                const { username, password } = req.body;
+                const validate = await userSchema
+                    .tailor('login')
+                    .validateAsync({
+                        username: username,
+                        password: password,
+                    });
+                    req.flash('notify', {
+                        type: 'success',
+                        message: 'Login efetuado com sucesso!',
+                    });
+            } catch (err) {
+                req.flash('notify', {
+                    type: 'danger',
+                    message: err.details,
+                })
             }
+            return res.redirect('/');
         }
         return res.redirect('/login');
     } catch (err) {

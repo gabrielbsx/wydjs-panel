@@ -1,9 +1,13 @@
 const Joi = require('joi');
 
-exports.register = Joi.object().keys({
+module.exports = Joi.object().keys({
     name: Joi.string()
         .max(255)
-        .required()
+        .alter({
+            register: (schema) => schema.required(),
+            login: (schema) => schema.forbidden(),
+            recovery: (schema) => schema.forbidden(),
+        })
         .messages({
             'string.base': 'Nome deve conter apenas caracteres alfa numéricos!',
             'string.empty': 'Nome não deve estar vázio!',
@@ -15,7 +19,11 @@ exports.register = Joi.object().keys({
         .alphanum()
         .min(4)
         .max(12)
-        .required()
+        .alter({
+            register: (schema) => schema.required(),
+            login: (schema) => schema.required(),
+            recovery: (schema) => schema.forbidden(),
+        })
         .messages({
             'string.base': 'Usuário deve conter apenas caracteres alfa numéricos!',
             'string.empty': 'Usuário não deve estar vázia!',
@@ -29,7 +37,11 @@ exports.register = Joi.object().keys({
         .alphanum()
         .min(4)
         .max(12)
-        .required()
+        .alter({
+            register: (schema) => schema.required(),
+            login: (schema) => schema.required(),
+            recovery: (schema) => schema.forbidden(),
+        })
         .messages({
             'string.base': 'Senha deve conter apenas caracteres alfa numéricos!',
             'string.empty': 'Senha não deve estar vázia!',
@@ -40,7 +52,11 @@ exports.register = Joi.object().keys({
         }),
 
     password_confirm: Joi.string().valid(Joi.ref('password'))
-        .required()
+        .alter({
+            register: (schema) => schema.required(),
+            login: (schema) => schema.forbidden(),
+            recovery: (schema) => schema.forbidden(),
+        })
         .messages({
             'string.required': 'Confirmação de senha obrigatória!',
             'any.only': 'As senhas não são idênticas!',
@@ -48,7 +64,11 @@ exports.register = Joi.object().keys({
 
     email: Joi.string()
         .email({ minDomainSegments: 2, })
-        .required()
+        .alter({
+            register: (schema) => schema.required(),
+            login: (schema) => schema.forbidden(),
+            recovery: (schema) => schema.required(),
+        })
         .messages({
             'string.empty': 'E-mail não deve estar vázia!',
             'string.required': 'E-mail obrigatório!',

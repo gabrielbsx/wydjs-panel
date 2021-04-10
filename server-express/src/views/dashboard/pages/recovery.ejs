@@ -8,24 +8,27 @@
                         <img class="w-50" src="public/assets/images/brand.png" alt="">
                     </h3>
                 </div>
+                <% include ../partials/messages %>
                 <div class="card-body">
-                    <form action="/login" method="POST">
+                    <form action="/recovery" method="POST">
                         <div class="input-group mb-4">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="ti-user"></i></span>
                             </div>
-                            <input type="text" class="form-control" name="username" placeholder="Usuário">
-                        </div>
-                        <div class="input-group mb-4">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="ti-password"></i></span>
-                            </div>
-                            <input type="password" class="form-control" name="password" placeholder="Senha">
+                            <input type="text" class="form-control" name="email" placeholder="E-mail">
                         </div>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary">
-                                Login
+                            <button type="submit" class="btn btn-primary py-3 px-5">
+                                Recuperar conta
                             </button>
+                        </div>
+                        <div class="form-group text-center">
+                            <a class="btn btn-success" href="/login">
+                                Login
+                            </a>
+                            <a class="btn btn-danger" href="/register">
+                                Cadastro
+                            </a>
                         </div>
                     </form>
                 </div>
