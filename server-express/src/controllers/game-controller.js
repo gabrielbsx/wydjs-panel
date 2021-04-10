@@ -58,7 +58,7 @@ module.exports = class Game {
             return false;
         }
     }
-
+    
     async createAccount(username, password) {
         try {
             initial = await this.getInitial(username);

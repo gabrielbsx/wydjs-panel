@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const userModel = require('../models/news-model');
 const userSchema =  require('../schemas/users-schema');
 const gameController = new require('./game-controller');
 
@@ -49,16 +50,26 @@ exports.create = async (req, res, next) => {
                 };
                 await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
                 if (await gameController.userExists(username) === false) {
-                    if (await gameController.createUser(username, password)) {
-                        req.flash('notify', {
-                            type: 'success',
-                            message: 'Cadastro efetuado com sucesso!',
-                        });
-                    } else {
-                        req.flash('notify', {
-                            type: 'danger',
-                            message: 'Não foi possível cadastrar a conta!',
-                        });
+                    delete user.password_confirm;
+                    if (await userModel.create(user)) {
+                        if (await gameController.createAccount(username, password)) {
+                            req.flash('notify', {
+                                type: 'success',
+                                message: 'Cadastro efetuado com sucesso!',
+                            });
+                        } else {
+                            await userModel.destroy({
+                                where: {
+                                    name: name,
+                                    username: username,
+                                    email: email,
+                                },
+                            });
+                            req.flash('notify', {
+                                type: 'danger',
+                                message: 'Não foi possível cadastrar a conta!',
+                            });
+                        }
                     }
                 } else {
                     req.flash('notify', {
