@@ -8,7 +8,7 @@ exports.login = async (req, res, next) => {
         }
         return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/internalError');
+        return res.status(500).render('dashboard/pages/500');
     }
 };
 
@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
         }
         return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/internalError');
+        return res.status(500).render('dashboard/pages/500');
     }
 }
 
@@ -30,7 +30,7 @@ exports.recovery = async (req, res, next) => {
         }
         return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/internalError');
+        return res.status(500).render('dashboard/pages/500');
     }
 }
 
@@ -46,7 +46,7 @@ exports.create = async (req, res, next) => {
                     password_confirm: password_confirm,
                     email: email,
                 };
-                await userSchema.validateAsync(user, { abortEarly: false, });
+                await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
                 req.flash('notify', {
                     type: 'success',
                     message: 'Cadastro efetuado com sucesso!',
@@ -60,7 +60,7 @@ exports.create = async (req, res, next) => {
         }
         return res.redirect('/register');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/internalError', { err: err, });
+        return res.status(500).render('dashboard/pages/500', { err: err, });
     }
 }
 
@@ -69,39 +69,53 @@ exports.read = async (req, res, next) => {
         if (!req.session.user) {
             try {
                 const { username, password } = req.body;
-                const validate = await userSchema
+                await userSchema
                     .tailor('login')
                     .validateAsync({
                         username: username,
                         password: password,
                     });
-                    req.flash('notify', {
-                        type: 'success',
-                        message: 'Login efetuado com sucesso!',
-                    });
+                req.flash('notify', {
+                    type: 'success',
+                    message: 'Login efetuado com sucesso!',
+                });
+
             } catch (err) {
                 req.flash('notify', {
                     type: 'danger',
                     message: err.details,
                 })
             }
-            return res.redirect('/');
         }
-        return res.redirect('/login');
+        return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/internalError');
+        return res.status(500).render('dashboard/pages/500');
     }
 }
 
 exports.get = async (req, res, next) => {
     try {
         if (!req.session.user) {
-            if (true) {
-                return res.redirect('/login');
+            try {
+                const { email } = req.body;
+                await userSchema
+                    .tailor('recovery')
+                    .validateAsync({
+                        email: email,
+                    });
+                req.flash('notify', {
+                    type: 'success',
+                    message: 'Um e-mail foi enviado para você, confira para recuperar sua conta!',
+                });
+            } catch (err) {
+                req.flash('notify', {
+                    type: 'danger',
+                    message: err.details,
+                });
             }
         }
         return res.redirect('/recovery');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/internalError');
+        return res.status(500).render('dashboard/pages/500');
     }
 };
