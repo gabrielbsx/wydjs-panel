@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const userModel = require('../models/users-model');
 const userSchema =  require('../schemas/users-schema');
-const gameController = new (require('./game-controller'))();
+const game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
 
@@ -51,7 +51,7 @@ exports.create = async (req, res, next) => {
                     email: email,
                 };
                 await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
-                if (await gameController.userExists(username) === false) {
+                if (await game.userExists(username) === false) {
                     delete user.password_confirm;
                     user.id = v4();
                     user.access = 0;
@@ -59,7 +59,7 @@ exports.create = async (req, res, next) => {
                     user.created_at = new Date();
                     user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
                     if (await userModel.create(user)) {
-                        if (await gameController.createAccount(username, password)) {
+                        if (await game.createAccount(username, password)) {
                             req.flash('notify', {
                                 type: 'success',
                                 message: 'Cadastro efetuado com sucesso!',
@@ -109,7 +109,7 @@ exports.read = async (req, res, next) => {
                         username: username,
                         password: password,
                     });
-                const user = await gameController.userExists(username);
+                const user = await game.userExists(username);
                 if (user) {
                     if (await bcrypt.compare(password, user.password)) {
                         delete user.password;
