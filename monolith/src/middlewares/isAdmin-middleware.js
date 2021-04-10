@@ -1,20 +1,10 @@
 module.exports = async (req, res, next) => {
     try {
-        if (req.body.access === 3) {
+        if (req.session.user.access === 3) {
             return next();
         }
-        return res.status(403).json({
-            status: 'error',
-            auth: true,
-            isAdmin: false,
-            message: 'Usuário não é administrador!',
-        });
+        return res.redirect('/');
     } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            auth: true,
-            isAdmin: false,
-            message: err.toString(),
-        });
+        return res.status(500).render('dashboard/pages/500');
     }
 };
