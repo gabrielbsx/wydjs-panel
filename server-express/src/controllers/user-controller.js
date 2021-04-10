@@ -109,11 +109,22 @@ exports.read = async (req, res, next) => {
                         username: username,
                         password: password,
                     });
-                req.flash('notify', {
-                    type: 'success',
-                    message: 'Login efetuado com sucesso!',
-                });
-
+                const user = await gameController.userExists(username);
+                if (user) {
+                    if (await bcrypt.compare(password, user.password)) {
+                        delete user.password;
+                        req.flash('notify', {
+                            type: 'success',
+                            message: 'Login efetuado com sucesso!',
+                        });
+                        req.session.user = user;
+                    } else {
+                        req.flash('notify', {
+                            type: 'danger',
+                            message: 'Não foi possível efetuar o login!',
+                        });
+                    }
+                }
             } catch (err) {
                 req.flash('notify', {
                     type: 'danger',
