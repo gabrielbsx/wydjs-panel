@@ -7,23 +7,27 @@ const newsController = require('./controllers/news-controller');
 const dashboardController = require('./controllers/dashboard-controller');
 const errorController = require('./controllers/error-controller');
 
-const isLogged = require('./middlewares/isLogged-middleware');
-const isAdmin = require('./middlewares/isAdmin-middleware');
+const isLoggedMiddleware = require('./middlewares/isLogged-middleware');
+const isAdminMiddleware = require('./middlewares/isAdmin-middleware');
+const envMiddleware = require('./middlewares/environment-middleware');
+const recaptchaMiddleware = require('./middlewares/recaptcha-middleware');
 
-routes.get('/', isLogged.notLogged, homeController);
+routes.use(envMiddleware);
 
-routes.get('/login', isLogged.notLogged, userController.login);
-routes.post('/login', isLogged.notLogged, userController.trylogin);
+routes.get('/', isLoggedMiddleware.notLogged, homeController);
 
-routes.get('/register', isLogged.notLogged, userController.register);
-routes.post('/register', isLogged.notLogged, userController.tryregister);
+routes.get('/login', isLoggedMiddleware.notLogged, userController.login);
+routes.post('/login', recaptchaMiddleware, isLoggedMiddleware.notLogged, userController.trylogin);
 
-routes.get('/recovery', isLogged.notLogged, userController.recovery);
-routes.post('/recovery', isLogged.notLogged, userController.tryrecovery);
+routes.get('/register', isLoggedMiddleware.notLogged, userController.register);
+routes.post('/register', recaptchaMiddleware, isLoggedMiddleware.notLogged, userController.tryregister);
 
-routes.get('/logout', isLogged.logged, userController.logout);
+routes.get('/recovery', isLoggedMiddleware.notLogged, userController.recovery);
+routes.post('/recovery', recaptchaMiddleware, isLoggedMiddleware.notLogged, userController.tryrecovery);
 
-routes.get('/home', isLogged.logged, dashboardController.home);
+routes.get('/logout', isLoggedMiddleware.logged, userController.logout);
+
+routes.get('/home', isLoggedMiddleware.logged, dashboardController.home);
 
 routes.use(errorController.error404);
 

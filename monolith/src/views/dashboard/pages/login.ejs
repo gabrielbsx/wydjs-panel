@@ -1,4 +1,4 @@
-<% layout('../layoutForms.ejs') %>
+<% layout('../layouts/dashboardout.ejs') %>
 <div class="login-wrapper">
     <div class="d-flex justify-content-center mt-5">
         <div class="card" id="forget-card">
@@ -23,6 +23,8 @@
                             </div>
                             <input type="password" class="form-control" name="password" placeholder="Senha">
                         </div>
+                        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                        <input type="hidden" name="action" value="validate_captcha">
                         <div class="form-group text-center">
                             <button type="submit" class="btn btn-primary py-3 px-5">
                                 Login

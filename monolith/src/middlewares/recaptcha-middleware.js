@@ -4,10 +4,11 @@ const axios = require('axios');
 module.exports = async (req, res, next) => {
     try {
         recaptchaResponse = req.body['g-recaptcha-response'];
+        delete req.body['g-recaptcha-response'];
+        delete req.body['action'];
         if (recaptchaResponse) {
             var verifyRecaptcha = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${recaptchaResponse}&remoteip=${req.connection.remoteAddress}`;
             const verified = await axios.post(verifyRecaptcha);
-
             if (verified.data.success) {
                 return next();
             }
