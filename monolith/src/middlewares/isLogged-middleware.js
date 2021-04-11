@@ -3,9 +3,9 @@ const logged = async (req, res, next) => {
         if (req.session.user) {
             return next();
         }
-        res.flash('notify', {
+        req.flash('notify', {
             type: 'danger',
-            message: 'Você não está logado!',
+            message: 'Efetue o login para entrar no painel de controle!',
         });
         return res.redirect('/login');
     } catch (err) {
@@ -18,10 +18,13 @@ const notLogged = async (req, res, next) => {
         if (!req.session.user) {
             return next();
         }
-        return res.redirect('/');
+        return res.redirect('/home');
     } catch (err) {
         return res.status(500).render('dashboard/pages/500');
     }
 };
 
-module.exports = [logged, notLogged];
+module.exports = {
+    logged,
+    notLogged,
+};

@@ -1,8 +1,8 @@
 const fs = require('fs');
 const userModel = require('../models/users-model');
-
+require('dotenv').config();
 module.exports = class Game {
-    game = 'D:/_SERVIDOR/';
+    game = process.env.GAME_DIR;
     binaryAccount = this.game + 'base.bin';
     dbsrv = this.game + 'DBSrv/run/';
     tmsrv = this.game + 'TMSrv/run/';
