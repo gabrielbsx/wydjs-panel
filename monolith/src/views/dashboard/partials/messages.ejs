@@ -1,20 +1,29 @@
 <% const messages = getMessages() %>
-<% if (messages.notify) { %>
-    <% messages.notify.forEach((value) => { %>
-        <% if (value.type === 'danger') { %>
-            <div class="card-body message h6 text-center">
-                <% Object.values(value.message).forEach((message) => { %>
-                    <div class="alert alert-<%= value.type %>">
-                        <%= message.message %>
-                    </div>
-                <% }); %>
+<% if (messages.success) { %>
+    <% messages.message.forEach(message => { %>
+        <div class="card-body message h6 text-center">
+            <div class="alert alert-success">
+                <%= message.message %>
             </div>
-        <% } else { %>
+        </div>
+    <% }); %>
+<% } %>
+<% if (messages.error) { %>
+    <% messages.error.forEach(message => { %>
+        <% if (typeof message.message === 'string') { %>
             <div class="card-body message h6 text-center">
-                <div class="alert alert-<%= value.type %>">
-                    <%= value.message %>
+                <div class="alert alert-danger">
+                    <%= message.message %>
                 </div>
             </div>
+        <% } else if (typeof message.message === 'object') { %>
+            <% message.message.forEach((msg) => { %>
+                <div class="card-body message h6 text-center">
+                    <div class="alert alert-danger">
+                        <%= msg.message %>
+                    </div>
+                </div>
+            <% }) %>
         <% } %>
     <% }) %>
 <% } %>

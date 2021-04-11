@@ -32,8 +32,7 @@ exports.recovery = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
     try {
         delete req.session.user;
-        req.flash('notify', {
-            type: 'danger',
+        req.flash('error', {
             message: 'Deslogado com sucesso!',
         });
         return res.redirect('/login');
@@ -63,8 +62,7 @@ exports.tryregister = async (req, res, next) => {
                 user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
                 if (await userModel.create(user)) {
                     if (await game.createAccount(username, password)) {
-                        req.flash('notify', {
-                            type: 'success',
+                        req.flash('success', {
                             message: 'Cadastro efetuado com sucesso!',
                         });
                     } else {
@@ -76,21 +74,18 @@ exports.tryregister = async (req, res, next) => {
                                 email: email,
                             },
                         });
-                        req.flash('notify', {
-                            type: 'danger',
+                        req.flash('error', {
                             message: 'Não foi possível cadastrar a conta!',
                         });
                     }
                 }
             } else {
-                req.flash('notify', {
-                    type: 'danger',
+                req.flash('error', {
                     message: 'Conta existente!',
                 });
             }
         } catch (err) {
-            req.flash('notify', {
-                type: 'danger',
+            req.flash('error', {
                 message: err.details,
             });
         }
@@ -114,21 +109,18 @@ exports.trylogin = async (req, res, next) => {
             if (user) {
                 if (await bcrypt.compare(password, user.password)) {
                     delete user.password;
-                    req.flash('notify', {
-                        type: 'success',
+                    req.flash('success', {
                         message: 'Login efetuado com sucesso!',
                     });
                     req.session.user = user;
                 } else {
-                    req.flash('notify', {
-                        type: 'danger',
+                    req.flash('error', {
                         message: 'Não foi possível efetuar o login!',
                     });
                 }
             }
         } catch (err) {
-            req.flash('notify', {
-                type: 'danger',
+            req.flash('error', {
                 message: err.details,
             })
         }
@@ -147,13 +139,11 @@ exports.tryrecovery = async (req, res, next) => {
                 .validateAsync({
                     email: email,
                 });
-            req.flash('notify', {
-                type: 'success',
+            req.flash('success', {
                 message: 'Um e-mail foi enviado para você, confira para recuperar sua conta!',
             });
         } catch (err) {
-            req.flash('notify', {
-                type: 'danger',
+            req.flash('error', {
                 message: err.details,
             });
         }

@@ -13,8 +13,7 @@ module.exports = async (req, res, next) => {
                 return next();
             }
         }
-        req.flash('notify', {
-            type: 'danger',
+        req.flash('error', {
             message: 'Recaptcha inválido!',
         });
         return res.status(401).redirect(req.originalUrl);

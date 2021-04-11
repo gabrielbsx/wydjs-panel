@@ -3,8 +3,7 @@ const logged = async (req, res, next) => {
         if (req.session.user) {
             return next();
         }
-        req.flash('notify', {
-            type: 'danger',
+        req.flash('error', {
             message: 'Efetue o login para entrar no painel de controle!',
         });
         return res.redirect('/login');
