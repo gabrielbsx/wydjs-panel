@@ -19,19 +19,19 @@ require('./models');
 app = express();
 
 app.use(cors());
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({ contentSecurityPolicy: false, }));
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false, }));
 app.use(compression());
 
-app.use(fileUpload({ limits: { fileSize: 50 * 1024 * 1024 }, }));
+app.use(fileUpload({ limits: { fileSize: 50 * 1024 * 1024, }, }));
 app.use(flash());
 app.use(session({
     secret: process.env.SECRET,
-    cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
-    resave: true,   
-    saveUninitialized: false
+    cookie: { maxAge: 365 * 24 * 60 * 60 * 1000, },
+    resave: false,   
+    saveUninitialized: false,
 }));
 app.set('trust proxy', 1);
 

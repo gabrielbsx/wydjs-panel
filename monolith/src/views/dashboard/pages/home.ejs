@@ -1,1 +1,22 @@
 <% layout('../layouts/dashboardin.ejs') %>
+<% include ../partials/messages %>
+<div class="container-fluid page-body-wrapper">
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-md-8 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-row justify-content-between border-bottom">
+                                Seja bem-vindo ao painel de controle <%= user.name.charAt(0).toUpperCase() + user.name.slice(1) %>
+                            </div>
+                            <div class="">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

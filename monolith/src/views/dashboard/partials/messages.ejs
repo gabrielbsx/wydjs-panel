@@ -1,6 +1,6 @@
 <% const messages = getMessages() %>
 <% if (messages.success) { %>
-    <% messages.message.forEach(message => { %>
+    <% messages.success.forEach(message => { %>
         <div class="card-body message h6 text-center">
             <div class="alert alert-success">
                 <%= message.message %>

@@ -32,7 +32,7 @@ exports.recovery = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
     try {
         delete req.session.user;
-        req.flash('error', {
+        req.flash('success', {
             message: 'Deslogado com sucesso!',
         });
         return res.redirect('/login');
@@ -113,6 +113,7 @@ exports.trylogin = async (req, res, next) => {
                         message: 'Login efetuado com sucesso!',
                     });
                     req.session.user = user;
+                    res.locals.user = 'teste'; 
                 } else {
                     req.flash('error', {
                         message: 'Não foi possível efetuar o login!',

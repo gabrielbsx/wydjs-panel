@@ -29,6 +29,8 @@ routes.get('/logout', isLoggedMiddleware.logged, userController.logout);
 
 routes.get('/home', isLoggedMiddleware.logged, dashboardController.home);
 
+routes.get('/guildmark', isLoggedMiddleware.logged, dashboardController.guildmark);
+
 routes.use(errorController.error404);
 
 module.exports = routes;
