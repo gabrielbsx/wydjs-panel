@@ -22,60 +22,42 @@
                         </span>
                     </div>
                 </div>
-                <a href="#" id="profile-dropdown" data-toggle="dropdown">
-                    <i class="mdi mdi-dots-vertical"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right sidebar-dropdown preview-list" aria-labelledby="profile-dropdown">
-                    <a href="/profile" class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-settings text-primary"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">Perfil</p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="/changepass" class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-onepassword  text-info"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">Alterar senha</p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="/logout" class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-dark rounded-circle">
-                                <i class="mdi mdi-exit-to-app text-danger"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <p class="preview-subject ellipsis mb-1 text-small">Sair</p>
-                        </div>
-                    </a>
-                </div>
             </div>
         </li>
         <li class="nav-item nav-category">
             <span class="nav-link">Menu</span>
         </li>
         <li class="nav-item menu-items">
-            <a class="nav-link" href="/dashboard">
+            <a class="nav-link" href="/home">
                 <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
+                    <i class="mdi mdi-home"></i>
                 </span>
                 <span class="menu-title">Início</span>
             </a>
         </li>
         <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#profile" aria-expanded="false" aria-controls="profile">
+                <span class="menu-icon">
+                    <i class="mdi mdi-account"></i>
+                </span>
+                <span class="menu-title">Perfil</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="profile">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/change-password">Alterar senha</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/recovery-numeric-password">Recuperação de numérica</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item menu-items">
             <a class="nav-link" href="/guildmark">
                 <span class="menu-icon">
-                    <i class="mdi mdi-playlist-play"></i>
+                    <i class="mdi mdi-image"></i>
                 </span>
                 <span class="menu-title">Guildmark</span>
             </a>
@@ -95,6 +77,25 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/ranking-cities">Ranking de cidades</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-toggle="collapse" href="#donate" aria-expanded="false" aria-controls="donate">
+                <span class="menu-icon">
+                    <i class="mdi mdi-cards-heart"></i>
+                </span>
+                <span class="menu-title">Doações</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="donate">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/donate">Doação</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/donate-rules">Regras</a>
                     </li>
                 </ul>
             </div>

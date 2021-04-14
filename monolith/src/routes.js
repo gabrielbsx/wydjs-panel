@@ -30,6 +30,13 @@ routes.get('/logout', isLoggedMiddleware.logged, userController.logout);
 routes.get('/home', isLoggedMiddleware.logged, dashboardController.home);
 
 routes.get('/guildmark', isLoggedMiddleware.logged, dashboardController.guildmark);
+routes.get('/change-password', isLoggedMiddleware.logged);
+routes.get('/donate', isLoggedMiddleware.logged);
+routes.get('/donate-rules', isLoggedMiddleware.logged);
+routes.get('/ranking-players', isLoggedMiddleware.logged);
+routes.get('/ranking-cities', isLoggedMiddleware.logged);
+routes.get('/recovery-numeric-password', isLoggedMiddleware.logged);
+
 
 routes.use(errorController.error404);
 
