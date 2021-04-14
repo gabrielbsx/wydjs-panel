@@ -6,8 +6,15 @@
     <body>
         <div class="container-scroller">
             <% include ../partials/header %>
-            <%- body %>
-            <% include ../partials/footer %>
+            <div class="container-fluid page-body-wrapper">
+                <% include ../partials/mobile-header %>
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <%- body %>
+                    </div>
+                </div>
+                <% include ../partials/footer %>
+            </div>
         </div>
         <% include ../partials/scripts %>
     </body>

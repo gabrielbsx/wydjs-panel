@@ -1,38 +1,32 @@
 <% layout('../layouts/dashboardin.ejs') %>
-<div class="container-fluid page-body-wrapper">
-    <div class="main-panel">
-        <div class="content-wrapper">
-            <div class="row">
-                <div class="col-md-12 grid-margin stretch-card">
-                    <% include ../partials/messages %>
-                </div>
-                <div class="col-md-8 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex flex-row justify-content-between border-bottom">
-                                Guildmark
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <% include ../partials/messages %>
+        </div>
+        <div class="col-md-8 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row justify-content-between border-bottom">
+                        Guildmark
+                    </div>
+                    <div class="d-flex flex-row justify-content-center my-2 text-center">
+                        <form method="POST" action="/guildmark">
+                            <div class="form-group guildname my-1">
+                                <select class="form-control">
+                                    <option value="11">Guildx</option>
+                                </select>
                             </div>
-                            <div class="d-flex flex-row justify-content-center my-2 text-center">
-                                <form method="POST" action="/guildmark">
-                                    <div class="form-group guildname my-1">
-                                        <select class="form-control">
-                                            <option value="11">Guildx</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group my-1">
-                                        <input class="form-control" name="guildmark" type="file">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">
-                                            Enviar guildmark
-                                        </button>
-                                    </div>
-                                </form>
+                            <div class="form-group my-1">
+                                <input class="form-control" name="guildmark" type="file">
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">
+                                    Enviar guildmark
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
