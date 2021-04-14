@@ -20,3 +20,20 @@
         });
     });
 </script>
+<% if (typeof user === 'object') { %>
+    <script>
+        async function addGuildname(guildname, guildid) {
+
+        }
+
+        async function getGuildname(id) {
+            
+        }
+
+        async function verifyGuild() {
+            $.get('/guildinfo', (data) => {
+                console.log(data);
+            });
+        }
+    </script>
+<% } %>

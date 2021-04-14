@@ -113,7 +113,6 @@ exports.trylogin = async (req, res, next) => {
                         message: 'Login efetuado com sucesso!',
                     });
                     req.session.user = user;
-                    res.locals.user = 'teste'; 
                 } else {
                     req.flash('error', {
                         message: 'Não foi possível efetuar o login!',
