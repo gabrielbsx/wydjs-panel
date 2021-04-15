@@ -3,7 +3,7 @@ const Joi = require('joi');
 const userSchema =  require('../schemas/users-schema');
 const guildmarkSchema = require('../schemas/guildmark-schema');
 const userModel = require('../models/users-model');
-const game = new (require('../helpers/game'))();
+const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
 
@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
                 email: email,
             };
             await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
-            if (await game.userExists(username) === false) {
+            if (await Game.userExists(username) === false) {
                 delete user.password_confirm;
                 user.id = v4();
                 user.access = 0;
@@ -27,7 +27,7 @@ exports.register = async (req, res, next) => {
                 user.created_at = new Date();
                 user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
                 if (await userModel.create(user)) {
-                    if (await game.createAccount(username, password)) {
+                    if (await Game.createAccount(username, password)) {
                         req.flash('success', {
                             message: 'Cadastro efetuado com sucesso!',
                         });
@@ -71,7 +71,7 @@ exports.login = async (req, res, next) => {
                     username: username,
                     password: password,
                 });
-            const user = await game.userExists(username);
+            const user = await Game.userExists(username);
             if (user) {
                 if (await bcrypt.compare(password, user.password)) {
                     delete user.password;
@@ -88,7 +88,8 @@ exports.login = async (req, res, next) => {
         } catch (err) {
             req.flash('error', {
                 message: err.details,
-            })
+            });
+            return res.redirect('/login');
         }
         return res.redirect('/home');
     } catch (err) {
@@ -159,7 +160,7 @@ exports.guildmark = async (req, res, next) => {
 exports.changepassword = async (req, res, next) => {
     try {
         try {
-            const { oldpassword, password, password_confirm } = req.body;
+            var { oldpassword, password, password_confirm } = req.body;
             const { username } = req.session.user;
 
             await userSchema
@@ -170,33 +171,47 @@ exports.changepassword = async (req, res, next) => {
                     password_confirm: password_confirm,
                 });
     
-            const user = await game.userExists(username);
+            const user = await Game.userExists(username);
     
             if (user) {
+
                 if (await bcrypt.compare(oldpassword, user.password)) {
-                    if (await game.changePassword(username, password)) {
+
+                    if (await Game.changePassword(username, password)) {
+
                         password = await bcrypt.hash(password, await bcrypt.genSalt(15));
-                        let result = await userModel.update({ password: password, }, {
+
+                        const result = await userModel.update({ password: password, }, {
                             where: {
-                                username: user.username,
+                                username: username,
                             }
                         });
+
+                        console.log(result);
+
                         if (result) {
                             req.flash('success', {
                                 message: 'Senha alterada com sucesso!',
                             });
                         } else {
-                            await game.changePassword(username, oldpassword);
+                            await Game.changePassword(username, oldpassword);
                             req.flash('error', {
                                 message: 'Não foi possível alterar a senha!',
                             });
                         }
+
+                    } else {
+                        req.flash('error', {
+                            message: 'Não foi possível alterar a senha!',
+                        });
                     }
+
                 } else {
                     req.flash('error', {
                         message: 'Senha antiga inválida!',
                     });
                 }
+
             } else {
                 req.flash('error', {
                     message: 'Conta inexistente!',
@@ -209,7 +224,24 @@ exports.changepassword = async (req, res, next) => {
             });
         }
 
-        return res.redirect('/changepassword');
+        return res.redirect('/change-password');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/500');
+    }
+};
+
+/**
+ * ADMIN
+ */
+
+exports.newdonatepackage = async (req, res, next) => {
+    try {
+        try {
+
+        } catch (err) {
+            
+        }
+        return res.redirect('/donatepackage');
     } catch (err) {
         return res.status(500).render('dashboard/pages/500');
     }
