@@ -1,0 +1,33 @@
+<script>
+    var loginState = false;
+    var registerState = false;
+    var recoveryState = false;
+
+    async function setlogin() {
+        await unsetregister();
+        await unsetrecovery();
+        $("#forms > #login").show();
+    }
+    async function setregister() {
+        await unsetlogin();
+        await unsetrecovery();
+        $("#forms > #register").show();
+    }
+    async function setrecovery() {
+        await unsetlogin();
+        await unsetregister();
+        $("#forms > #recovery").show();
+    }
+    async function unsetrecovery() {
+        $("#forms > #recovery").hide();
+    }
+    async function unsetlogin() {
+        $("#forms > #login").hide();
+    }
+    async function unsetregister() {
+        $("#forms > #register").hide();
+    }
+    $(document).ready(async function () {
+        await setlogin();
+    });
+</script>

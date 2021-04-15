@@ -17,9 +17,6 @@ const recaptchaMiddleware = require('./middlewares/recaptcha-middleware');
 routes.use(envMiddleware);
 
 routes.get('/', isLoggedMiddleware.notLogged, userController.index);
-/*routes.get('/login', isLoggedMiddleware.notLogged, userController.login);
-routes.get('/register', isLoggedMiddleware.notLogged, userController.register);
-routes.get('/recovery', isLoggedMiddleware.notLogged, userController.recovery);*/
 routes.get('/logout', isLoggedMiddleware.logged, userController.logout);
 
 /**

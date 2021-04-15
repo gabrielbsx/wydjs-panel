@@ -1,0 +1,26 @@
+<script>
+    async function addGuildname(guildname, guildid) {
+        
+    }
+    async function getGuildname(id) {
+        
+    }
+    async function verifyGuild() {
+        $.get("/guildinfo", (data) => {
+            console.log(data);
+        });
+    }
+    async function setdonate() {
+        if ($(".donate:visible").length) {
+            $('.donate').hide('slow');
+        } else {
+            $(".donate").show('slow');
+        }
+    }
+    async function unsetdonate() {
+        $(".donate").hide();
+    }
+    $(document).ready(async function () {
+        await unsetdonate();
+    });
+</script>

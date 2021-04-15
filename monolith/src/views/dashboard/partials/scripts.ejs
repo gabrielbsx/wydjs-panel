@@ -12,9 +12,6 @@
 <script src="public/assets/js/dashboard.js"></script>
 <script>
     $('.message').delay(1 * 60 * 60).hide('slow');
-    $("button").submit((event) => {
-        console.log('teste');
-    });
     grecaptcha.ready(function () {
         grecaptcha.execute("<%= recaptcha_site %>", {
             action: "validate_recaptcha"
@@ -28,65 +25,11 @@
     });
 </script>
 <% if (typeof user === 'undefined') { %>
-    <script>
-
-        async function setlogin() {
-            await unsetregister();
-            await unsetrecovery();
-            $("#forms > #login").show();
-        }
-
-        async function setregister() {
-            await unsetlogin();
-            await unsetrecovery();
-            $("#forms > #register").show();
-        }
-
-        async function setrecovery() {
-            await unsetlogin();
-            await unsetregister();
-            $("#forms > #recovery").show();
-        }
-
-        async function unsetrecovery() {
-            $("#forms > #recovery").hide();
-        }
-        
-        async function unsetlogin() {
-            $("#forms > #login").hide();
-        }
-        
-        async function unsetregister() {
-            $("#forms > #register").hide();
-        }
-
-        $(document).ready(async function () {
-            await setlogin();
-        });
-
-    </script>
+    <% include scripts/dashboard.ejs %>
 <% } %>
 <% if (typeof user === 'object') { %>
-    <script>
-        async function addGuildname(guildname, guildid) {
-
-        }
-
-        async function getGuildname(id) {
-            
-        }
-
-        async function verifyGuild() {
-            $.get('/guildinfo', (data) => {
-                console.log(data);
-            });
-        }
-    </script>
+    <% include scripts/user.ejs %>
     <% if (user.access === 3) { %>
-        <script>
-            async function getdonatepackages() {
-
-            }
-        </script>
+        <% include scripts/admin.ejs %>
     <% } %>
 <% } %>
