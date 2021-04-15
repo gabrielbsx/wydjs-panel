@@ -39,6 +39,7 @@ routes.post('/register', recaptchaMiddleware, isLoggedMiddleware.notLogged, apiC
 routes.post('/login', recaptchaMiddleware, isLoggedMiddleware.notLogged, apiController.login);
 
 routes.post('/guildmark', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.guildmark);
+routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.changepassword);
 
 
 routes.use(errorController.error404);

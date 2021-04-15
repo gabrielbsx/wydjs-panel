@@ -155,3 +155,60 @@ exports.guildmark = async (req, res, next) => {
         return res.status(500).render('dashboard/pages/500');
     }
 };
+
+exports.changepassword = async (req, res, next) => {
+    try {
+        try {
+            const { oldpassword, password, password_confirm } = req.body;
+            const { username } = req.session.user;
+
+            await userSchema
+                .tailor('login')
+                .validateAsync({
+                    password: password,
+                    password_confirm: password_confirm,
+                });
+    
+            const user = await game.userExists(username);
+    
+            if (user) {
+                if (await bcrypt.compare(oldpassword, user.password)) {
+                    password = await bcrypt.hash(password, await bcrypt.genSalt(15));
+                    let result = await userModel.update({
+                        password: password,
+                    }, {
+                        where: {
+                            username: user.username,
+                        }
+                    });
+                    if (result) {
+                        req.flash('success', {
+                            message: 'Senha alterada com sucesso!',
+                        });
+                    } else {
+                        req.flash('error', {
+                            message: 'Não foi possível alterar a senha!',
+                        });
+                    }
+                } else {
+                    req.flash('error', {
+                        message: 'Senha antiga inválida!',
+                    });
+                }
+            } else {
+                req.flash('error', {
+                    message: 'Conta inexistente!',
+                });
+            }
+
+        } catch (err) {
+            req.flash('error', {
+                message: err.details,
+            });
+        }
+
+        return res.redirect('/changepassword');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/500');
+    }
+};

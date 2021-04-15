@@ -7,6 +7,7 @@ module.exports = Joi.object().keys({
             register: (schema) => schema.required(),
             login: (schema) => schema.forbidden(),
             recovery: (schema) => schema.forbidden(),
+            changepassword: (schema) => schema.forbidden(),
         })
         .messages({
             'string.base': 'Nome deve conter apenas caracteres alfa numéricos!',
@@ -23,6 +24,7 @@ module.exports = Joi.object().keys({
             register: (schema) => schema.required(),
             login: (schema) => schema.required(),
             recovery: (schema) => schema.forbidden(),
+            changepassword: (schema) => schema.forbidden(),
         })
         .messages({
             'string.base': 'Usuário deve conter apenas caracteres alfa numéricos!',
@@ -68,6 +70,7 @@ module.exports = Joi.object().keys({
             register: (schema) => schema.required(),
             login: (schema) => schema.forbidden(),
             recovery: (schema) => schema.required(),
+            changepassword: (schema) => schema.forbidden(),
         })
         .messages({
             'string.empty': 'E-mail não deve estar vázia!',
