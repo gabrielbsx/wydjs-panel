@@ -31,6 +31,12 @@ routes.get('/ranking-cities', isLoggedMiddleware.logged, dashboardController.ran
 routes.get('/recovery-numeric-password', isLoggedMiddleware.logged, dashboardController.changepassword);
 
 /**
+ * ADMIN
+ */
+
+routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, dashboardController.donate);
+
+/**
  * API
  */
 
@@ -40,6 +46,10 @@ routes.post('/login', recaptchaMiddleware, isLoggedMiddleware.notLogged, apiCont
 
 routes.post('/guildmark', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.guildmark);
 routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.changepassword);
+
+/**
+ * ADMIN
+ */
 
 
 routes.use(errorController.error404);

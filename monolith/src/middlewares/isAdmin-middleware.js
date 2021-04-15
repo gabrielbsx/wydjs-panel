@@ -5,6 +5,6 @@ module.exports = async (req, res, next) => {
         }
         return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };

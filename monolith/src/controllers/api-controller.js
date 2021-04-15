@@ -57,7 +57,7 @@ exports.register = async (req, res, next) => {
         }
         return res.redirect('/register');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500', { err: err, });
+        return res.status(500).render('dashboard/pages/errors/500', { err: err, });
     }
 }
 
@@ -93,7 +93,7 @@ exports.login = async (req, res, next) => {
         }
         return res.redirect('/home');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 }
 
@@ -116,7 +116,7 @@ exports.recovery = async (req, res, next) => {
         }
         return res.redirect('/recovery');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 
@@ -153,7 +153,7 @@ exports.guildmark = async (req, res, next) => {
 
         return res.redirect('/guildmark');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 
@@ -226,7 +226,7 @@ exports.changepassword = async (req, res, next) => {
 
         return res.redirect('/change-password');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 
@@ -234,15 +234,32 @@ exports.changepassword = async (req, res, next) => {
  * ADMIN
  */
 
-exports.newdonatepackage = async (req, res, next) => {
+exports.createdonatepackage = async (req, res, next) => {
     try {
         try {
-
+            const { name, value, donate, percent } = req.body;
         } catch (err) {
-            
+            req.flash('error', {
+                message: err.details,
+            });
         }
-        return res.redirect('/donatepackage');
+        return res.redirect('/donate-package');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
+    }
+};
+
+exports.createdonateitem = async (req, res, next) => {
+    try {
+        try {
+            const { name_package, itemname, itemcode } = req.body;
+        } catch (err) {
+            req.flash('error', {
+                message: err.details,
+            });
+        }
+        return res.redirect('donate-item');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };

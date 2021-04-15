@@ -12,7 +12,7 @@ const logged = async (req, res, next) => {
         }
         return res.redirect('/login');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 
@@ -23,7 +23,7 @@ const notLogged = async (req, res, next) => {
         }
         return res.redirect('/home');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500');
+        return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 

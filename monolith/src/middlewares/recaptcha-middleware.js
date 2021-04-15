@@ -18,6 +18,6 @@ module.exports = async (req, res, next) => {
         });
         return res.status(401).redirect(req.originalUrl);
     } catch (err) {
-        return res.status(500).render('dashboard/pages/500', { err: err, });
+        return res.status(500).render('dashboard/pages/errors/500', { err: err, });
     }
 };
