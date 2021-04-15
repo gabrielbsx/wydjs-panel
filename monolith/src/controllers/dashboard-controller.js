@@ -46,10 +46,18 @@ exports.donaterules = async (req, res, next) => {
     }
 };
 
-exports.sendguildmark = async (req, res, next) => {
+exports.rankingplayers = async (req, res, next) => {
     try {
-
+        return res.status(200).render('dashboard/pages/rankingplayers');
     } catch (err) {
+        return res.status(500).render('dashboard/pages/500');
+    }
+};
 
+exports.rankingcities = async (req, res, next) => {
+    try {
+        return res.status(200).render('dashboard/pages/rankingcities');
+    } catch (err) {
+        return res.status(500).render('dashboard/pages/500');
     }
 };
