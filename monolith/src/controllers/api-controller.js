@@ -55,7 +55,7 @@ exports.register = async (req, res, next) => {
                 message: err.details,
             });
         }
-        return res.redirect('/register');
+        return res.redirect('/');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500', { err: err, });
     }
@@ -89,7 +89,7 @@ exports.login = async (req, res, next) => {
             req.flash('error', {
                 message: err.details,
             });
-            return res.redirect('/login');
+            return res.redirect('/');
         }
         return res.redirect('/home');
     } catch (err) {
@@ -114,7 +114,7 @@ exports.recovery = async (req, res, next) => {
                 message: err.details,
             });
         }
-        return res.redirect('/recovery');
+        return res.redirect('/');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
     }

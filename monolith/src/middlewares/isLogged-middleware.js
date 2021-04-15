@@ -10,7 +10,7 @@ const logged = async (req, res, next) => {
                 message: 'Efetue o login para entrar no painel de controle!',
             });
         }
-        return res.redirect('/login');
+        return res.redirect('/');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
     }

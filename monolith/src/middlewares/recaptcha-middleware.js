@@ -16,7 +16,8 @@ module.exports = async (req, res, next) => {
         req.flash('error', {
             message: 'Recaptcha inválido!',
         });
-        return res.status(401).redirect(req.originalUrl);
+        if (['/login', '/register', '/recovery'].includes(req.originalUrl)) return res.status(401).redirect('/');
+        else return res.status(401).redirect('/home');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500', { err: err, });
     }
