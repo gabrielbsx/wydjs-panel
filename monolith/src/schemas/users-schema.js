@@ -24,7 +24,7 @@ module.exports = Joi.object().keys({
             register: (schema) => schema.required(),
             login: (schema) => schema.required(),
             recovery: (schema) => schema.forbidden(),
-            changepassword: (schema) => schema.forbidden(),
+            changepassword: (schema) => schema.required(),
         })
         .messages({
             'string.base': 'Usuário deve conter apenas caracteres alfa numéricos!',
@@ -43,6 +43,7 @@ module.exports = Joi.object().keys({
             register: (schema) => schema.required(),
             login: (schema) => schema.required(),
             recovery: (schema) => schema.forbidden(),
+            changepassword: (schema) => schema.required(),
         })
         .messages({
             'string.base': 'Senha deve conter apenas caracteres alfa numéricos!',
@@ -58,6 +59,7 @@ module.exports = Joi.object().keys({
             register: (schema) => schema.required(),
             login: (schema) => schema.forbidden(),
             recovery: (schema) => schema.forbidden(),
+            changepassword: (schema) => schema.required(),
         })
         .messages({
             'string.required': 'Confirmação de senha obrigatória!',

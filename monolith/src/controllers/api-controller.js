@@ -163,8 +163,9 @@ exports.changepassword = async (req, res, next) => {
             const { username } = req.session.user;
 
             await userSchema
-                .tailor('login')
+                .tailor('changepassword')
                 .validateAsync({
+                    username: username,
                     password: password,
                     password_confirm: password_confirm,
                 });
@@ -173,22 +174,23 @@ exports.changepassword = async (req, res, next) => {
     
             if (user) {
                 if (await bcrypt.compare(oldpassword, user.password)) {
-                    password = await bcrypt.hash(password, await bcrypt.genSalt(15));
-                    let result = await userModel.update({
-                        password: password,
-                    }, {
-                        where: {
-                            username: user.username,
+                    if (await game.changePassword(username, password)) {
+                        password = await bcrypt.hash(password, await bcrypt.genSalt(15));
+                        let result = await userModel.update({ password: password, }, {
+                            where: {
+                                username: user.username,
+                            }
+                        });
+                        if (result) {
+                            req.flash('success', {
+                                message: 'Senha alterada com sucesso!',
+                            });
+                        } else {
+                            await game.changePassword(username, oldpassword);
+                            req.flash('error', {
+                                message: 'Não foi possível alterar a senha!',
+                            });
                         }
-                    });
-                    if (result) {
-                        req.flash('success', {
-                            message: 'Senha alterada com sucesso!',
-                        });
-                    } else {
-                        req.flash('error', {
-                            message: 'Não foi possível alterar a senha!',
-                        });
                     }
                 } else {
                     req.flash('error', {

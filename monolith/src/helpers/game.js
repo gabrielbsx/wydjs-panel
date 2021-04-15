@@ -64,7 +64,19 @@ module.exports = class Game {
                 account[(i + 16)] = password[i];
             }
 
-            fs.writeFileSync(path, account);
+            await fs.writeFile(path, account);
+
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+
+    async changePassword(username, password) {
+        try {
+            let path = process.env.GAME_DIR + 'Common/ImportPass/' + new Date().getTime() + Math.random() + '.txt';
+            
+            await fs.writeFile(path, `${username} ${password}`);
 
             return true;
         } catch (err) {
