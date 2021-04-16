@@ -1,6 +1,7 @@
 <script>
-    var currentElement = undefined;
+    var currentElement = $('li.active').children('a');
     var pages = ['donate', 'rules'];
+
     async function addGuildname(guildname, guildid) {
         
     }
@@ -12,10 +13,21 @@
             console.log(data);
         });
     }
+    async function setclassbutton(element) {
+        $(element).parent().parent().parent().parent().children('a').addClass('active');
+    }
     async function setpage(page, element) {
+        var button = $(element).parent().parent().parent().parent();
+        button = button.is('li') ? button : $(element).parent();
+
         if (currentElement) {
             $(currentElement).removeClass('active');
+            var oldButton = $(currentElement).parent().parent().parent().parent();
+            oldButton = oldButton.is('li') ? oldButton : $(currentElement).parent();
+            oldButton.removeClass('active');
+            button.addClass('active');
         }
+
         if ($(`.${page}:visible`).length) {
             $(`.${page}`).hide('slow');
         } else {
@@ -31,6 +43,6 @@
         }
     }
     $(document).ready(async () => {
-
+        
     });
 </script>
