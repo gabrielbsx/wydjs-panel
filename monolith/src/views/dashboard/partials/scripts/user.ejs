@@ -1,6 +1,6 @@
 <script>
     //Author: Kentaro
-    var removeHomeClass = !(location.hash === '#home');
+    var removeHomeClass = !(location.hash === '#home' || location.hash === '');
     if (!location.hash.length) {
         $('a[href*="#home"]').parent().addClass('active');
         var currentElement = $('li.active').children('a');
