@@ -1,17 +1,20 @@
 <script>
     //Author: Kentaro
+    var pages = ['home', 'donate', 'donate-rules', 'ranking-players', 'ranking-cities', 'guildmark', 'change-password', 'recovery-numeric-password'];
     var removeHomeClass = !(location.hash === '#home' || location.hash === '');
+    
     if (!location.hash.length) {
         $('a[href*="#home"]').parent().addClass('active');
+        $('.home').show('slow');
         var currentElement = $('li.active').children('a');
     } else {
         var elem = $(`a[href*="${location.hash}"]:first`);
         elem = elem.parent().parent().parent().parent().is('li') ? elem.parent().parent().parent().parent() : elem.parent();
         elem.addClass('active');
+        $(location.hash.replace('#', '.')).show('slow');
         var currentElement = elem;
     }
 
-    var pages = ['home', 'donate', 'donate-rules', 'ranking-players', 'ranking-cities', 'guildmark', 'change-password', 'recovery-numeric-password'];
 
     async function addGuildname(guildname, guildid) {
         
