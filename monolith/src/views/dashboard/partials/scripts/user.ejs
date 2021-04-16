@@ -1,4 +1,5 @@
 <script>
+    var currentElement = undefined;
     var pages = ['donate', 'rules'];
     async function addGuildname(guildname, guildid) {
         
@@ -11,15 +12,20 @@
             console.log(data);
         });
     }
-    async function setpage(page) {
+    async function setpage(page, element) {
+        if (currentElement) {
+            $(currentElement).removeClass('active');
+        }
         if ($(`.${page}:visible`).length) {
             $(`.${page}`).hide('slow');
         } else {
             pages.forEach(async (value) => {
                 if (value === page) {
-                    $(`.${value}`).show('slow')
+                    $(`.${value}`).show('slow');
+                    $(element).addClass('active');
+                    currentElement = element;
                     return;
-                };
+                }
                 $(`.${value}`).hide('slow');
             });
         }
