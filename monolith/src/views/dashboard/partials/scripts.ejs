@@ -12,17 +12,20 @@
 <script src="public/assets/js/dashboard.js"></script>
 <script>
     $('.message').delay(1 * 60 * 60).hide('slow');
-    grecaptcha.ready(function () {
-        grecaptcha.execute("<%= recaptcha_site %>", {
-            action: "validate_recaptcha"
-        }).then(function (token) {
-            if ($(".g-recaptcha-response").length) {
-                $.each($(".g-recaptcha-response"), (index, value) => {
-                    value.value = token;
-                });
-            }
+    function setrecaptcha() {
+        grecaptcha.ready(function () {
+            grecaptcha.execute("<%= recaptcha_site %>", {
+                action: "validate_recaptcha"
+            }).then(function (token) {
+                if ($(".g-recaptcha-response").length) {
+                    $.each($(".g-recaptcha-response"), (index, value) => {
+                        value.value = token;
+                    });
+                }
+            });
         });
-    });
+    }
+    setrecaptcha();
 </script>
 <% if (typeof user === 'undefined') { %>
     <% include scripts/dashboard.ejs %>

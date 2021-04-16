@@ -55,5 +55,50 @@
     }
     $(document).ready(async () => {
         if (removeHomeClass)  $('a[href*="#home"]').parent().removeClass('active');
+        
+        $("form").submit(function (event) {
+            event.preventDefault();
+            var data = new FormData(this);
+            var url = $(this).attr('action');
+            var type = $(this).attr('method');
+            console.log(data);
+            $.ajax({
+                url: url,
+                type: type,
+                contentType: false,
+                processData: false,
+                data: data,
+                success: async (message) => {
+                    await setrecaptcha();
+                    $(".message-ajax").append(`
+                        <div class="alert alert-${message.status === 'success' ? message.status : 'danger'}">
+                            ${message.message}
+                        </div>
+                    `);
+                    $(".message-ajax").show('slow');
+                    setTimeout(async () => {
+                        $(".message-ajax").hide('slow');
+                    }, 3000);
+                    setTimeout(async () => {
+                        $(".message-ajax").empty();
+                    }, 3300);
+                },
+                error: async (err) => {
+                    await setrecaptcha();
+                    $(".message-ajax").append(`
+                        <div class="alert alert-danger">
+                            ${err.responseJSON.message || err.statusText}
+                        </div>
+                    `);
+                    $(".message-ajax").show('slow');
+                    setTimeout(async () => {
+                        $(".message-ajax").hide('slow');
+                    }, 3000);
+                    setTimeout(async () => {
+                        $(".message-ajax").empty();
+                    }, 3300);
+                },
+            });
+        });
     });
 </script>

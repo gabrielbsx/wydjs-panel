@@ -6,6 +6,7 @@ const userModel = require('../models/users-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
+const { type, message } = require('../schemas/users-schema');
 
 exports.register = async (req, res, next) => {
     try {
@@ -125,35 +126,56 @@ exports.guildmark = async (req, res, next) => {
         try {
             const { guildid } = req.body;
             const { guildmark } = req.files;
+            var status = 'error';
 
-            let message;
+            var message;
 
             await guildmarkSchema.validateAsync({ guildid: guildid }, { abortEarly: false, });
-    
-            if (guildmark.mimetype === 'image/bmp') {
-                if (guildmark.encoding === '7bit') {
-                    if (guildmark.size <= 100000) {
-                        let path = __dirname + '/../' + process.env.GUILD_PATH + 'b0' + (100000 + parseInt(guildid)) + '.bmp';
-                        await guildmark.mv(path);
-                        type = 'success';
-                        message = 'Guildmark enviada com sucesso!';
-                    } else message = 'Guildmark muito grande!';
-                } else message = 'Guildmark não é 24 bits!';
-            } else message = 'Guildmark inválido!';
+            
+            if (typeof guildmark !== 'undefined') {
+                if (guildmark.mimetype === 'image/bmp') {
+                    if (guildmark.encoding === '7bit') {
+                        if (guildmark.size <= 100000) {
+                            let path = __dirname + '/../' + process.env.GUILD_PATH + 'b0' + (100000 + parseInt(guildid)) + '.bmp';
+                            await guildmark.mv(path);
+                            status = 'success';
+                            message = 'Guildmark enviada com sucesso!';
+                        } else message = 'Guildmark muito grande!';
+                    } else message = 'Guildmark não é 24 bits!';
+                } else message = 'Guildmark inválido!';
+            } else message = 'Envie uma guildmark!';
 
-            req.flash(type, {
+            /*req.flash(type, {
+                message: message,
+            });*/
+            if (status === 'success') {
+                return res.status(200).json({
+                    status: status,
+                    message: message,
+                });
+            }
+            return res.status(301).json({
+                status: status,
                 message: message,
             });
             
         } catch (err) {
-            req.flash('error', {
-                message: err.details,
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Envie uma guildmark!',
             });
+            /*req.flash('error', {
+                message: err.details,
+            });*/
         }
-
-        return res.redirect('/guildmark');
+        //return res.redirect('/guildmark');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500');
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno',
+        });
+        //err.getMessage();
+        //return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 
