@@ -1,4 +1,5 @@
 <script>
+    var pages = ['donate', 'rules'];
     async function addGuildname(guildname, guildid) {
         
     }
@@ -10,17 +11,20 @@
             console.log(data);
         });
     }
-    async function setdonate() {
-        if ($(".donate:visible").length) {
-            $('.donate').hide('slow');
+    async function setpage(page) {
+        if ($(`.${page}:visible`).length) {
+            $(`.${page}`).hide('slow');
         } else {
-            $(".donate").show('slow');
+            pages.forEach(async (value) => {
+                if (value === page) {
+                    $(`.${value}`).show('slow')
+                    return;
+                };
+                $(`.${value}`).hide('slow');
+            });
         }
     }
-    async function unsetdonate() {
-        $(".donate").hide();
-    }
-    $(document).ready(async function () {
-        await unsetdonate();
+    $(document).ready(async () => {
+
     });
 </script>

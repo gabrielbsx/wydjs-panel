@@ -1,33 +1,19 @@
 <script>
-    var loginState = false;
-    var registerState = false;
-    var recoveryState = false;
+    var pages = ['login', 'register', 'recovery'];
+    async function setpage(page) {
+        if ($(`#forms > #${page}:visible`).length) {
+            $(`#forms > #${page}`).hide('slow');
+        } else {
+            pages.forEach(async (value) => {
+                if (value === page) {
+                    $(`#forms > #${value}`).show('slow')
+                    return;
+                };
+                $(`#forms > #${value}`).hide('slow');
+            });
+        }
+    }
+    $(document).ready(async () => {
 
-    async function setlogin() {
-        await unsetregister();
-        await unsetrecovery();
-        $("#forms > #login").show();
-    }
-    async function setregister() {
-        await unsetlogin();
-        await unsetrecovery();
-        $("#forms > #register").show();
-    }
-    async function setrecovery() {
-        await unsetlogin();
-        await unsetregister();
-        $("#forms > #recovery").show();
-    }
-    async function unsetrecovery() {
-        $("#forms > #recovery").hide();
-    }
-    async function unsetlogin() {
-        $("#forms > #login").hide();
-    }
-    async function unsetregister() {
-        $("#forms > #register").hide();
-    }
-    $(document).ready(async function () {
-        await setlogin();
     });
 </script>
