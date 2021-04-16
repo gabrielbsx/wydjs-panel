@@ -1,6 +1,17 @@
 <script>
-    var currentElement = $('li.active').children('a');
-    var pages = ['donate', 'rules'];
+    //Author: Kentaro
+    var removeHomeClass = !(location.hash === '#home');
+    if (!location.hash.length) {
+        $('a[href*="#home"]').parent().addClass('active');
+        var currentElement = $('li.active').children('a');
+    } else {
+        var elem = $(`a[href*="${location.hash}"]:first`);
+        elem = elem.parent().parent().parent().parent().is('li') ? elem.parent().parent().parent().parent() : elem.parent();
+        elem.addClass('active');
+        var currentElement = elem;
+    }
+
+    var pages = ['donate', 'donate-rules', 'ranking-players', 'ranking-cities', 'guildmark', 'change-password', 'recovery-numeric-password'];
 
     async function addGuildname(guildname, guildid) {
         
@@ -12,9 +23,6 @@
         $.get("/guildinfo", (data) => {
             console.log(data);
         });
-    }
-    async function setclassbutton(element) {
-        $(element).parent().parent().parent().parent().children('a').addClass('active');
     }
     async function setpage(page, element) {
         var button = $(element).parent().parent().parent().parent();
@@ -43,6 +51,6 @@
         }
     }
     $(document).ready(async () => {
-        
+        if (removeHomeClass)  $('a[href*="#home"]').parent().removeClass('active');
     });
 </script>
