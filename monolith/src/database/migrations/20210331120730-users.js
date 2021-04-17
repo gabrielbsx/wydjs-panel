@@ -34,12 +34,12 @@ module.exports = {
         allowNull: false,
       },
       access: {
-        type: Sequelize.INTEGER(1),
+        type: Sequelize.INTEGER(1).UNSIGNED,
         allowNull: false,
         default: 0,
       },
       status: {
-        type: Sequelize.INTEGER(1),
+        type: Sequelize.INTEGER(1).UNSIGNED,
         allowNull: false,
         default: 0,
       },

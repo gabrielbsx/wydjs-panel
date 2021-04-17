@@ -2,20 +2,78 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
+    return queryInterface.createTable('rankings', {
+      id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4(),
+        allowNull: false,
+        unique: true,
+        primaryKey: true,
+      },
+      user_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+      },
+      name: {
+        type: Sequelize.STRING(50),
+        allowNull: false,
+      },
+      classe: {
+        type: Sequelize.INTEGER(2),
+        allowNull: false,
+      },
+      ev: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      medal: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      power: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      ban: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      level: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
+      hasSub: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      sub_level: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      sub_class: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      sub_face: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+        defaultValue: 1,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+      },
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+    return await queryInterface.dropTable('rankings');
   }
 };

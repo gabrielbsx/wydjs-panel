@@ -2,20 +2,39 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
+    return await queryInterface.createTable('payment_gateway', {
+      id: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4(),
+        allowNull: false,
+        unique: true,
+        primaryKey: true,
+      },
+      name: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+        unique: true,
+      },
+      key: {
+        type: Sequelize.STRING(),
+        allowNull: false,
+      },
+      token: {
+        type: Sequelize.STRING(),
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+      },
+    });
   },
 
   down: async (queryInterface, Sequelize) => {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+    return await queryInterface.dropTable('payment_gateway');
   }
 };
