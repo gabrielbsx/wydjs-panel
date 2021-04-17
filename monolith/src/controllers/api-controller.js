@@ -2,11 +2,11 @@ require('dotenv').config();
 const Joi = require('joi');
 const userSchema =  require('../schemas/users-schema');
 const guildmarkSchema = require('../schemas/guildmark-schema');
+const donatepackageSchema = require('../schemas/donatepackage-schema');
 const userModel = require('../models/users-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
-const { message } = require('../schemas/users-schema');
 
 exports.register = async (req, res, next) => {
     try {
@@ -153,24 +153,34 @@ exports.guildmark = async (req, res, next) => {
                         if (guildmark.size <= 100000) {
                             let path = __dirname + '/../' + process.env.GUILD_PATH + 'b0' + (100000 + parseInt(guildid)) + '.bmp';
                             await guildmark.mv(path);
-                            status = 'success';
-                            message = 'Guildmark enviada com sucesso!';
-                        } else message = 'Guildmark muito grande!';
-                    } else message = 'Guildmark não é 24 bits!';
-                } else message = 'Guildmark inválido!';
-            } else message = 'Envie uma guildmark!';
-
-            if (status === 'success') {
-                return res.status(200).json({
-                    status: status,
-                    message: message,
+                            return res.status(200).json({
+                                status: 'success',
+                                message: 'Guildmark enviada com sucesso!',
+                            });
+                        } else {
+                            return res.status(301).json({
+                                status: 'error',
+                                message: 'Guildmark muito grande!',
+                            });
+                        }
+                    } else {
+                        return res.status(301).json({
+                            status: 'error',
+                            message: 'Guildmark não é 24 bits!',
+                        });
+                    }
+                } else {
+                    return res.status(301).json({
+                        status: 'error',
+                        message: 'Guildmark inválido!',
+                    });
+                }
+            } else {
+                return res.status(301).json({
+                    status: 'error',
+                    message: 'Envie uma guildmark!',
                 });
             }
-            return res.status(301).json({
-                status: status,
-                message: message,
-            });
-            
         } catch (err) {
             return res.status(301).json({
                 status: 'error',
@@ -261,10 +271,16 @@ exports.recoverynumericpassword = async (req, res, next) => {
         try {
 
         } catch (err) {
-            ret
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Erro interno!',
+            });
         }
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500');
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
     }
 };
 
@@ -276,14 +292,28 @@ exports.createdonatepackage = async (req, res, next) => {
     try {
         try {
             const { name, value, donate, percent } = req.body;
+
+            await donatepackageSchema
+                .validateAsync({
+                    name: name,
+                    value: value,
+                    donate: donate,
+                    percent: percent,
+                }, { abortEarly: false, });
+
+            
+
         } catch (err) {
-            req.flash('error', {
-                message: err.details,
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Erro interno!',
             });
         }
-        return res.redirect('/donate-package');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500');
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
     }
 };
 
