@@ -6,7 +6,7 @@ const userModel = require('../models/users-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
-const { type, message } = require('../schemas/users-schema');
+const { message } = require('../schemas/users-schema');
 
 exports.register = async (req, res, next) => {
     try {
@@ -29,7 +29,8 @@ exports.register = async (req, res, next) => {
                 user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
                 if (await userModel.create(user)) {
                     if (await Game.createAccount(username, password)) {
-                        req.flash('success', {
+                        return res.status(200).json({
+                            status: 'success',
                             message: 'Cadastro efetuado com sucesso!',
                         });
                     } else {
@@ -41,24 +42,34 @@ exports.register = async (req, res, next) => {
                                 email: email,
                             },
                         });
-                        req.flash('error', {
-                            message: 'Não foi possível cadastrar a conta!',
+                        return res.status(301).json({
+                            status: 'error',
+                            message: 'Não foi possível cadastrar!',
                         });
                     }
+                } else {
+                    return res.status(301).json({
+                        status: 'error',
+                        message: 'Não foi possível cadastrar a conta!',
+                    });
                 }
             } else {
-                req.flash('error', {
+                return res.status(301).json({
+                    status: 'error',
                     message: 'Conta existente!',
                 });
             }
         } catch (err) {
-            req.flash('error', {
-                message: err.details,
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Erro interno!',
             });
         }
-        return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500', { err: err, });
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
     }
 }
 
@@ -107,17 +118,21 @@ exports.recovery = async (req, res, next) => {
                 .validateAsync({
                     email: email,
                 });
-            req.flash('success', {
-                message: 'Um e-mail foi enviado para você, confira para recuperar sua conta!',
+            return res.status(200).json({
+                status: 'success',
+                message: 'Um e-mail foi enviado para você, confirma para recuperaar sua conta!',
             });
         } catch (err) {
-            req.flash('error', {
-                message: err.details,
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Erro interno!',
             });
         }
-        return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500');
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
     }
 };
 
@@ -145,9 +160,6 @@ exports.guildmark = async (req, res, next) => {
                 } else message = 'Guildmark inválido!';
             } else message = 'Envie uma guildmark!';
 
-            /*req.flash(type, {
-                message: message,
-            });*/
             if (status === 'success') {
                 return res.status(200).json({
                     status: status,
@@ -164,25 +176,21 @@ exports.guildmark = async (req, res, next) => {
                 status: 'error',
                 message: err.details || 'Envie uma guildmark!',
             });
-            /*req.flash('error', {
-                message: err.details,
-            });*/
+
         }
-        //return res.redirect('/guildmark');
     } catch (err) {
         return res.status(500).json({
             status: 'error',
             message: 'Erro interno',
         });
-        //err.getMessage();
-        //return res.status(500).render('dashboard/pages/errors/500');
     }
 };
 
 exports.changepassword = async (req, res, next) => {
     try {
         try {
-            var { oldpassword, password, password_confirm } = req.body;
+            const { oldpassword, password_confirm } = req.body;
+            var { password } = req.body;
             const { username } = req.session.user;
 
             await userSchema
@@ -196,57 +204,65 @@ exports.changepassword = async (req, res, next) => {
             const user = await Game.userExists(username);
     
             if (user) {
-
                 if (await bcrypt.compare(oldpassword, user.password)) {
-
                     if (await Game.changePassword(username, password)) {
-
                         password = await bcrypt.hash(password, await bcrypt.genSalt(15));
-
                         const result = await userModel.update({ password: password, }, {
                             where: {
                                 username: username,
                             }
                         });
-
-                        console.log(result);
-
                         if (result) {
-                            req.flash('success', {
+                            return res.status(200).json({
+                                status: 'success',
                                 message: 'Senha alterada com sucesso!',
                             });
                         } else {
                             await Game.changePassword(username, oldpassword);
-                            req.flash('error', {
+                            return res.status(301).json({
+                                status: 'error',
                                 message: 'Não foi possível alterar a senha!',
                             });
                         }
-
                     } else {
-                        req.flash('error', {
+                        return res.status(301).json({
+                            status: 'error',
                             message: 'Não foi possível alterar a senha!',
                         });
                     }
-
                 } else {
-                    req.flash('error', {
+                    return res.status(301).json({
+                        status: 'error',
                         message: 'Senha antiga inválida!',
                     });
                 }
-
             } else {
-                req.flash('error', {
+                return res.status(301).json({
+                    status: 'error',
                     message: 'Conta inexistente!',
                 });
             }
-
         } catch (err) {
-            req.flash('error', {
-                message: err.details,
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Não foi possível alterar a senha!',
             });
         }
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
+    }
+};
 
-        return res.redirect('/change-password');
+exports.recoverynumericpassword = async (req, res, next) => {
+    try {
+        try {
+
+        } catch (err) {
+            ret
+        }
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
     }
