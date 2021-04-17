@@ -9,6 +9,7 @@ class News extends Model {
         content: DataTypes.TEXT,
         category: DataTypes.INTEGER,
         name: DataTypes.STRING(50),
+        id_user: DataTypes.UUIDV4,
         created_at: DataTypes.DATE,
         updated_at: DataTypes.DATE,
     }, {
@@ -19,7 +20,7 @@ class News extends Model {
   }
 
   static associate(models) {
-    this.belongsToMany(model.User, { foreignKey: 'id_user', as: 'owner' })
+    this.belongsToMany(model.User, { foreignKey: 'id_user', as: 'owner' });
   }
 }
   

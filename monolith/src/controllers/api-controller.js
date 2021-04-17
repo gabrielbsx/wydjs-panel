@@ -4,6 +4,7 @@ const userSchema =  require('../schemas/users-schema');
 const guildmarkSchema = require('../schemas/guildmark-schema');
 const donatepackageSchema = require('../schemas/donatepackage-schema');
 const userModel = require('../models/users-model');
+const donatepackageModel = require('../models/donatepackage-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
@@ -293,15 +294,26 @@ exports.createdonatepackage = async (req, res, next) => {
         try {
             const { name, value, donate, percent } = req.body;
 
-            await donatepackageSchema
-                .validateAsync({
-                    name: name,
-                    value: value,
-                    donate: donate,
-                    percent: percent,
-                }, { abortEarly: false, });
+            donatepackage = {
+                name: name,
+                value: value,
+                donate: donate,
+                percent: percent,
+            };
 
-            
+            await donatepackageSchema
+                .validateAsync(donatepackage, { abortEarly: false, });
+
+            if (await donatepackageModel.create(donatepackage)) {
+                donatepackage.id = v4();
+                donatepackage.created_at = new Date();
+                
+            } else {
+                return res.status(301).json({
+                    status: 'error',
+                    message: 'Não foi possível adicionar pacote de doação!',
+                });
+            }
 
         } catch (err) {
             return res.status(301).json({
