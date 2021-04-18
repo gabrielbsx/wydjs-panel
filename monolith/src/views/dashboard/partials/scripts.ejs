@@ -34,8 +34,5 @@
     <% include scripts/dashboard.ejs %>
 <% } %>
 <% if (typeof user === 'object') { %>
-    <% include scripts/user.ejs %>
-    <% if (user.access === 3) { %>
-        <% include scripts/admin.ejs %>
-    <% } %>
+    <% include scripts/logged.ejs %>
 <% } %>

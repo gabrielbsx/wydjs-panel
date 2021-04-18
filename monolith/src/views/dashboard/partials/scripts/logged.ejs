@@ -3,6 +3,18 @@
     var pages = [
         'home', 'donate', 'donate-rules', 'ranking-players', 'ranking-cities', 'guildmark', 'change-password', 'recovery-numeric-password',
     ];
+
+    var translate = {
+        'id': 'Identificador',
+        'name': 'Nome',
+        'player': 'Jogador',
+        'percent': 'Porcentagem',
+        'donate': 'Donate',
+        'value': 'Valor',
+        'createdAt': 'Criado em',
+        'updatedAt': 'Atualizado em',
+    };
+
     var removeHomeClass = !(location.hash === '#home' || location.hash === '');
     
     if (!location.hash.length) {
@@ -17,17 +29,30 @@
         var currentElement = elem;
     }
 
+    async function updateApi(url, id) {
+        console.log(id);
+        $('.update-title').text(url.replaceAll('-', ' ').replace('/', ''));
+        $('.update').toggle();
+    }
+    
+    async function deleteApi(url, id) {
+        console.log(id);
+    }
+
     async function addGuildname(guildname, guildid) {
         
     }
+    
     async function getGuildname(id) {
         
     }
+    
     async function verifyGuild() {
         $.get("/guildinfo", (data) => {
             console.log(data);
         });
     }
+    
     async function setpage(page, element) {
         var button = $(element).parent().parent().parent().parent();
         button = button.is('li') ? button : $(element).parent();
@@ -54,6 +79,7 @@
             });
         }
     }
+    
     $(document).ready(async () => {
         if (removeHomeClass)  $('a[href*="#home"]').parent().removeClass('active');
         
@@ -62,7 +88,7 @@
             var data = new FormData(this);
             var url = $(this).attr('action');
             var type = $(this).attr('method');
-            console.log(data);
+            
             $.ajax({
                 url: url,
                 type: type,
@@ -101,5 +127,63 @@
                 },
             });
         });
+
+        async function getApi(url, classAppend) {
+            $.ajax({
+                url: url,
+                success: async (data) => {
+                    var appendData = '<div class="row"><table class="table table-dark table-hover table-striped">';
+                    data.data.forEach(async (value, key) => {
+                        var id = value.id;
+                        delete value.id;
+                        delete value.createdAt;
+                        delete value.updatedAt;
+                        if (typeof keys === 'undefined') {
+                            var keys = Object.keys(value);
+                            appendData += '<thead>';
+                            keys.forEach(async (name) => {
+                                appendData += `<th>${translate[name]}</th>`;
+                            });
+                            appendData += `<th colspan="2">Ação</th>`;
+                            appendData += '</thead>';
+                            appendData += '<tbody>';
+                        }
+
+                        keys.forEach(async (name) => {
+                            appendData += `<td>${value[name]}</td>`;
+                        });
+
+                        appendData += `
+                            <td>
+                                <button class="btn btn-primary" onclick="updateApi('${url}', '${id}');">Alterar</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" onclick="deleteApi('${url}', '${id}');">Deletar</button>
+                            </td>
+                        `;
+                        appendData += '</tbody>';
+                    });
+
+                    appendData += '</table></div>';
+                    
+                    $(classAppend).append(appendData);
+                },
+                error: async (err) => {
+                    $(classAppend).append('<div class="alert alert-danger">Houve algum problema na API!</div>');
+                },
+            });
+        }
+
+        <% if (user.access === 3) { %>
+
+            translate.haha = 'teste';
+            console.log(translate);
+
+            pages.push('donate-packages');
+            pages.push('donate-items');
+
+            await getApi('/donate-packages', '.list-donate-packages');
+
+        <% } %>
     });
 </script>
