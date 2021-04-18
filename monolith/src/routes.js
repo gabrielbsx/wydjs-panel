@@ -35,6 +35,8 @@ routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, a
 
 //ADMIN
 
+routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonatepackages);
+
 
 
 routes.use(errorController.error404);

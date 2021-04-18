@@ -3,8 +3,10 @@ const Joi = require('joi');
 const userSchema =  require('../schemas/users-schema');
 const guildmarkSchema = require('../schemas/guildmark-schema');
 const donatepackageSchema = require('../schemas/donatepackage-schema');
+const donateitemsSchema = require('../schemas/donateitems-schema');
 const userModel = require('../models/users-model');
 const donatepackageModel = require('../models/donatepackage-model');
+const donateitemsModel = require('../models/donateitems-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
@@ -294,20 +296,23 @@ exports.createdonatepackage = async (req, res, next) => {
         try {
             const { name, value, donate, percent } = req.body;
 
-            donatepackage = {
+            var donatepackage = {
                 name: name,
                 value: value,
                 donate: donate,
                 percent: percent,
             };
 
-            await donatepackageSchema
-                .validateAsync(donatepackage, { abortEarly: false, });
+            await donatepackageSchema.validateAsync(donatepackage, { abortEarly: false, });
+
+            donatepackage.id = v4();
+            donatepackage.created_at = new Date();
 
             if (await donatepackageModel.create(donatepackage)) {
-                donatepackage.id = v4();
-                donatepackage.created_at = new Date();
-                
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'Pacote de doação criado com sucesso!',
+                });
             } else {
                 return res.status(301).json({
                     status: 'error',
@@ -332,14 +337,71 @@ exports.createdonatepackage = async (req, res, next) => {
 exports.createdonateitem = async (req, res, next) => {
     try {
         try {
-            const { name_package, itemname, itemcode } = req.body;
+            const { id_package, itemname, item_id, eff1, eff2, eff3, effv1, effv2, effv3 } = req.body;
+
+            var donateitems = {
+                id_package: id_package,
+                itemname: itemname,
+                item_id: item_id,
+                eff1: eff1,
+                eff2: eff2,
+                eff3: eff3,
+                effv1: effv1,
+                effv2: effv2,
+                effv3: effv3,
+            };
+
+            await donateitemsSchema.validateAsync(donateitems, { abortEarly: false, });
+
+            if (await donatepackageModel.findOne({ where: { id: id_package } })) {
+                donateitems.id = v4();
+                donateitems.created_at = new Date();    
+                if (await donateitemsModel.create(donateitems)) {
+                    return res.status(200).json({
+                        status: 'success',
+                        message: 'Bonificação criada com sucesso!',
+                    });
+                } else {
+                    return res.status(301).json({
+                        status: 'error',
+                        message: 'Não foi possível criar a bonificação!',
+                    });
+                }
+            } else {
+                return res.status(301).json({
+                    status: 'error',
+                    message: 'Pacote de doação inexistente!',
+                });
+            }
         } catch (err) {
-            req.flash('error', {
-                message: err.details,
+            /*req.flash('error', {
+                message: err.details || 'Erro interno!',
+            });*/
+            return res.status(301).json({
+                status: 'error',
+                message: err.details || 'Erro interno!',
             });
         }
-        return res.redirect('donate-item');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500');
+        //return res.status(500).render('dashboard/pages/errors/500');
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
+    }
+};
+
+exports.getdonatepackages = async (req, res, next) => {
+    try {
+        const allpackages = await donatepackageModel.findAll();
+        return res.status(200).json({
+            status: 'success',
+            data: 'teste',
+        });
+    } catch (err) {
+        return res.status(500).json({
+            status: 'error',
+            message: 'Erro interno!',
+        });
     }
 };
