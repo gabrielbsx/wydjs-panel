@@ -29,10 +29,43 @@
         var currentElement = elem;
     }
 
-    async function updateApi(url, id) {
-        console.log(id);
+    async function updateApi(url, id, data) {
         $('.update-title').text(url.replaceAll('-', ' ').replace('/', ''));
-        $('.update').toggle();
+        $.ajax({
+            url: url,
+            data: {
+                id: id,
+            },
+            success: async (data) => {
+                var data = data.data;
+                if (typeof data !== 'undefined') {
+                    var form = `<form method="POST" action="/update-${url.replace('/', '')}">`;
+                    
+                    data.forEach(async (value, key) => {
+                        Object.keys(value).forEach(async (name) => {
+                            if (['createdAt', 'updatedAt'].includes(name)) return;
+                            form += `
+                                <div class="form-group my-1">
+                                    <input class="form-control" type="${name === 'id' ? 'hidden' : ''}" name="${name}" value="${value[name]}">
+                                </div>
+                            `;
+                        });                 
+                    });
+
+                    form += '<button class="btn btn-primary">Atualizar</button>';
+                
+                    form += `</form>`;
+
+                    $('.update-data').append(form);
+                }
+            },
+            error: async (err) => {
+                console.log(err);
+            },
+        });
+        $('.update').toggle('slow');
+
+        $('.update-data').append(``);
     }
     
     async function deleteApi(url, id) {
@@ -177,7 +210,6 @@
         <% if (user.access === 3) { %>
 
             translate.haha = 'teste';
-            console.log(translate);
 
             pages.push('donate-packages');
             pages.push('donate-items');

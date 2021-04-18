@@ -318,6 +318,18 @@ exports.createdonateitem = async (req, res, next) => {
 
 exports.getdonatepackages = async (req, res, next) => {
     try {
+        const { id } = req.body;
+        if (typeof id !== 'undefined') {
+            const data = await donatepackagesModel.findOne({
+                where: {
+                    id: id,
+                },
+            });
+            return res.status(200).json({
+                status: 'success',
+                data: data,
+            });
+        }
         const data = await donatepackagesModel.findAll();
         return res.status(200).json({
             status: 'success',
@@ -334,6 +346,18 @@ exports.getdonatepackages = async (req, res, next) => {
 
 exports.getdonateitems = async (req, res, next) => {
     try {
+        const { id } = req.body;
+        if (typeof id !== 'undefined') {
+            const data = await donateitemsModel.findOne({
+                where: {
+                    id: id,
+                },
+            });
+            return res.status(200).json({
+                status: 'success',
+                data: data,
+            });
+        }
         const data = await donateitemsModel.findAll();
         return res.status(200).json({
             status: 'success',
