@@ -11,8 +11,6 @@ class Users extends Model {
         email: DataTypes.STRING(100),
         access: DataTypes.INTEGER(1),
         status: DataTypes.INTEGER(1),
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
       },
       {
         sequelize,

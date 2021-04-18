@@ -13,8 +13,6 @@ class DonateItems extends Model {
         effv2: DataTypes.INTEGER.UNSIGNED,
         eff3: DataTypes.INTEGER.UNSIGNED,
         effv3: DataTypes.INTEGER.UNSIGNED,
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
     }, {
       sequelize,
       modelName: 'donate_items'

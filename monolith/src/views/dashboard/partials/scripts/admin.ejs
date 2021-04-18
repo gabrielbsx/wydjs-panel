@@ -1,17 +1,59 @@
 <script>
     pages.push('donate-packages');
     pages.push('donate-items');
+
     async function getdonatepackages() {
 
     }
+
     $(document).ready(async () => {
         const listdonatepackages = $('.list-donate-packages');
         const listdonateitems = $('.list-donate-items');
+        const translate = {
+            'id': 'Identificador',
+            'name': 'Nome',
+            'player': 'Jogador',
+            'percent': 'Porcentagem',
+            'donate': 'Donate',
+            'value': 'Valor',
+            'createdAt': 'Criado em',
+            'updatedAt': 'Atualizado em',
+        };
 
-        fetch('/donate-packages').then((response) => {
-            console.log(response);
-        }).catch((err) => {
+        async function getApi(url, classAppend) {
+            $.ajax({
+                url: url,
+                success: async (data) => {
+                    var appendData = '<div class="row"><table class="table table-dark table-hover table-striped">';
+                    data.data.forEach(async (value, key) => {
+                        delete value.id;
+                        if (typeof keys === 'undefined') {
+                            var keys = Object.keys(value);
+                            appendData += '<thead>';
+                            keys.forEach(async (name) => {
+                                appendData += `<th>${translate[name]}</th>`;
+                            });
+                            appendData += '</thead>';
+                            appendData += '<tbody>';
+                        }
+                        keys.forEach(async (name) => {
+                            if (['createdAt', 'updatedAt'].includes(name)) {
+                                value[name] = moment(value[name]).fromNow();
+                            }
+                            appendData += `<td>${value[name]}</td>`;
+                        });
+                        appendData += '</tbody>';
+                    });
+                    appendData += '</table></div>';
+                    $(classAppend).append(appendData);
+                },
+                error: async (err) => {
+                    $(classAppend).append('<div class="alert alert-danger">Houve algum problema na API!</div>');
+                },
+            });
+        }
 
-        });
+        await getApi('/donate-packages', '.list-donate-packages');
+
     });
 </script>

@@ -5,7 +5,7 @@ const guildmarkSchema = require('../schemas/guildmark-schema');
 const donatepackageSchema = require('../schemas/donatepackage-schema');
 const donateitemsSchema = require('../schemas/donateitems-schema');
 const userModel = require('../models/users-model');
-const donatepackageModel = require('../models/donatepackage-model');
+const donatepackagesModel = require('../models/donatepackages-model');
 const donateitemsModel = require('../models/donateitems-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
@@ -13,231 +13,194 @@ const { v4 } = require('uuid');
 
 exports.register = async (req, res, next) => {
     try {
-        try {
-            const { name, username, password, password_confirm, email } = req.body;
-            user = {
-                name: name,
-                username: username,
-                password: password,
-                password_confirm: password_confirm,
-                email: email,
-            };
-            await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
-            if (await Game.userExists(username) === false) {
-                delete user.password_confirm;
-                user.id = v4();
-                user.access = 0;
-                user.status = 0;
-                user.created_at = new Date();
-                user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
-                if (await userModel.create(user)) {
-                    if (await Game.createAccount(username, password)) {
-                        return res.status(200).json({
-                            status: 'success',
-                            message: 'Cadastro efetuado com sucesso!',
-                        });
-                    } else {
-                        await userModel.destroy({
-                            where: {
-                                id: user.id,
-                                name: name,
-                                username: username,
-                                email: email,
-                            },
-                        });
-                        return res.status(301).json({
-                            status: 'error',
-                            message: 'Não foi possível cadastrar!',
-                        });
-                    }
+        const { name, username, password, password_confirm, email } = req.body;
+        user = {
+            name: name,
+            username: username,
+            password: password,
+            password_confirm: password_confirm,
+            email: email,
+        };
+        await userSchema.tailor('register').validateAsync(user, { abortEarly: false, });
+        if (await Game.userExists(username) === false) {
+            delete user.password_confirm;
+            user.id = v4();
+            user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(15));
+            if (await userModel.create(user)) {
+                if (await Game.createAccount(username, password)) {
+                    req.flash('success', {
+                        message: 'Cadastro efetuado com sucesso!',
+                    });
                 } else {
-                    return res.status(301).json({
-                        status: 'error',
-                        message: 'Não foi possível cadastrar a conta!',
+                    await userModel.destroy({
+                        where: {
+                            id: user.id,
+                            name: name,
+                            username: username,
+                            email: email,
+                        },
+                    });
+                    req.flash('error', {
+                        message: 'Não foi possível cadastrar!',
                     });
                 }
             } else {
-                return res.status(301).json({
-                    status: 'error',
-                    message: 'Conta existente!',
+                req.flash('error', {
+                    message: 'Não foi possível cadastrar a conta!',
                 });
             }
-        } catch (err) {
-            return res.status(301).json({
-                status: 'error',
-                message: err.details || 'Erro interno!',
+        } else {
+            req.flash('error', {
+                message: 'Conta existente!',
             });
         }
+        return res.redirect('/');
     } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: 'Erro interno!',
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
         });
+        return res.redirect('/');
     }
 }
 
 exports.login = async (req, res, next) => {
     try {
-        try {
-            const { username, password } = req.body;
-            await userSchema
-                .tailor('login')
-                .validateAsync({
-                    username: username,
-                    password: password,
-                });
-            const user = await Game.userExists(username);
-            if (user) {
-                if (await bcrypt.compare(password, user.password)) {
-                    delete user.password;
-                    req.flash('success', {
-                        message: 'Login efetuado com sucesso!',
-                    });
-                    req.session.user = user;
-                } else {
-                    req.flash('error', {
-                        message: 'Não foi possível efetuar o login!',
-                    });
-                }
-            }
-        } catch (err) {
-            req.flash('error', {
-                message: err.details,
+        const { username, password } = req.body;
+        await userSchema
+            .tailor('login')
+            .validateAsync({
+                username: username,
+                password: password,
             });
-            return res.redirect('/');
+        const user = await Game.userExists(username);
+        if (user) {
+            if (await bcrypt.compare(password, user.password)) {
+                delete user.password;
+                req.flash('success', {
+                    message: 'Login efetuado com sucesso!',
+                });
+                req.session.user = user;
+                return res.redirect('/home');
+            } else {
+                req.flash('error', {
+                    message: 'Não foi possível efetuar o login!',
+                });
+            }
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível efetuar o login!',
+            });
         }
-        return res.redirect('/home');
+        return res.redirect('/');
     } catch (err) {
-        return res.status(500).render('dashboard/pages/errors/500');
+        req.flash('error', {
+            message: err.details || 'Erro interno',
+        });
+        return res.redirect('/');
     }
 }
 
 exports.recovery = async (req, res, next) => {
     try {
-        try {
-            const { email } = req.body;
-            await userSchema
-                .tailor('recovery')
-                .validateAsync({
-                    email: email,
-                });
-            return res.status(200).json({
-                status: 'success',
-                message: 'Um e-mail foi enviado para você, confirma para recuperaar sua conta!',
+        const { email } = req.body;
+        await userSchema
+            .tailor('recovery')
+            .validateAsync({
+                email: email,
             });
-        } catch (err) {
-            return res.status(301).json({
-                status: 'error',
-                message: err.details || 'Erro interno!',
-            });
-        }
-    } catch (err) {
-        return res.status(500).json({
-            status: 'error',
-            message: 'Erro interno!',
+        return res.status(200).json({
+            status: 'success',
+            message: 'Um e-mail foi enviado para você, confirma para recuperaar sua conta!',
         });
+    } catch (err) {
+        req.flash('error', {
+            status: 'error',
+            message: err.details || 'Erro interno!',
+        });
+        return res.redirect('/');
     }
 };
 
 exports.guildmark = async (req, res, next) => {
     try {
-        try {
-            const { guildid } = req.body;
-            const { guildmark } = req.files;
-            var status = 'error';
-
-            var message;
-
-            await guildmarkSchema.validateAsync({ guildid: guildid }, { abortEarly: false, });
-            
-            if (typeof guildmark !== 'undefined') {
-                if (guildmark.mimetype === 'image/bmp') {
-                    if (guildmark.encoding === '7bit') {
-                        if (guildmark.size <= 100000) {
-                            let path = __dirname + '/../' + process.env.GUILD_PATH + 'b0' + (100000 + parseInt(guildid)) + '.bmp';
-                            await guildmark.mv(path);
-                            return res.status(200).json({
-                                status: 'success',
-                                message: 'Guildmark enviada com sucesso!',
-                            });
-                        } else {
-                            return res.status(301).json({
-                                status: 'error',
-                                message: 'Guildmark muito grande!',
-                            });
-                        }
+        const { guildid } = req.body;
+        const { guildmark } = req.files;
+        await guildmarkSchema.validateAsync({ guildid: guildid }, { abortEarly: false, });
+        
+        if (typeof guildmark !== 'undefined') {
+            if (guildmark.mimetype === 'image/bmp') {
+                if (guildmark.encoding === '7bit') {
+                    if (guildmark.size <= 100000) {
+                        let path = __dirname + '/../' + process.env.GUILD_PATH + 'b0' + (100000 + parseInt(guildid)) + '.bmp';
+                        await guildmark.mv(path);
+                        return res.status(200).json({
+                            status: 'success',
+                            message: 'Guildmark enviada com sucesso!',
+                        });
                     } else {
                         return res.status(301).json({
                             status: 'error',
-                            message: 'Guildmark não é 24 bits!',
+                            message: 'Guildmark muito grande!',
                         });
                     }
                 } else {
                     return res.status(301).json({
                         status: 'error',
-                        message: 'Guildmark inválido!',
+                        message: 'Guildmark não é 24 bits!',
                     });
                 }
             } else {
                 return res.status(301).json({
                     status: 'error',
-                    message: 'Envie uma guildmark!',
+                    message: 'Guildmark inválido!',
                 });
             }
-        } catch (err) {
+        } else {
             return res.status(301).json({
                 status: 'error',
-                message: err.details || 'Envie uma guildmark!',
+                message: 'Envie uma guildmark!',
             });
-
         }
     } catch (err) {
-        return res.status(500).json({
+        return res.status(301).json({
             status: 'error',
-            message: 'Erro interno',
+            message: err.details || 'Erro interno',
         });
     }
 };
 
 exports.changepassword = async (req, res, next) => {
     try {
-        try {
-            const { oldpassword, password_confirm } = req.body;
-            var { password } = req.body;
-            const { username } = req.session.user;
+        const { oldpassword, password_confirm } = req.body;
+        var { password } = req.body;
+        const { username } = req.session.user;
 
-            await userSchema
-                .tailor('changepassword')
-                .validateAsync({
-                    username: username,
-                    password: password,
-                    password_confirm: password_confirm,
-                });
-    
-            const user = await Game.userExists(username);
-    
-            if (user) {
-                if (await bcrypt.compare(oldpassword, user.password)) {
-                    if (await Game.changePassword(username, password)) {
-                        password = await bcrypt.hash(password, await bcrypt.genSalt(15));
-                        const result = await userModel.update({ password: password, }, {
-                            where: {
-                                username: username,
-                            }
-                        });
-                        if (result) {
-                            return res.status(200).json({
-                                status: 'success',
-                                message: 'Senha alterada com sucesso!',
-                            });
-                        } else {
-                            await Game.changePassword(username, oldpassword);
-                            return res.status(301).json({
-                                status: 'error',
-                                message: 'Não foi possível alterar a senha!',
-                            });
+        await userSchema
+            .tailor('changepassword')
+            .validateAsync({
+                username: username,
+                password: password,
+                password_confirm: password_confirm,
+            });
+
+        const user = await Game.userExists(username);
+
+        if (user) {
+            if (await bcrypt.compare(oldpassword, user.password)) {
+                if (await Game.changePassword(username, password)) {
+                    password = await bcrypt.hash(password, await bcrypt.genSalt(15));
+                    const result = await userModel.update({ password: password, }, {
+                        where: {
+                            username: username,
                         }
+                    });
+                    if (result) {
+                        return res.status(200).json({
+                            status: 'success',
+                            message: 'Senha alterada com sucesso!',
+                        });
                     } else {
+                        await Game.changePassword(username, oldpassword);
                         return res.status(301).json({
                             status: 'error',
                             message: 'Não foi possível alterar a senha!',
@@ -246,144 +209,122 @@ exports.changepassword = async (req, res, next) => {
                 } else {
                     return res.status(301).json({
                         status: 'error',
-                        message: 'Senha antiga inválida!',
+                        message: 'Não foi possível alterar a senha!',
                     });
                 }
             } else {
                 return res.status(301).json({
                     status: 'error',
-                    message: 'Conta inexistente!',
+                    message: 'Senha antiga inválida!',
                 });
             }
-        } catch (err) {
+        } else {
             return res.status(301).json({
                 status: 'error',
-                message: err.details || 'Não foi possível alterar a senha!',
+                message: 'Conta inexistente!',
             });
         }
     } catch (err) {
-        return res.status(500).json({
+        return res.status(301).json({
             status: 'error',
-            message: 'Erro interno!',
+            message: err.details || 'Não foi possível alterar a senha!',
         });
     }
 };
 
 exports.recoverynumericpassword = async (req, res, next) => {
     try {
-        try {
 
-        } catch (err) {
-            return res.status(301).json({
-                status: 'error',
-                message: err.details || 'Erro interno!',
-            });
-        }
     } catch (err) {
-        return res.status(500).json({
+        return res.status(301).json({
             status: 'error',
             message: 'Erro interno!',
         });
     }
 };
 
-/**
- * ADMIN
- */
-
 exports.createdonatepackage = async (req, res, next) => {
     try {
-        try {
-            const { name, value, donate, percent } = req.body;
-
-            var donatepackage = {
-                name: name,
-                value: value,
-                donate: donate,
-                percent: percent,
-            };
-
-            await donatepackageSchema.validateAsync(donatepackage, { abortEarly: false, });
-
-            donatepackage.id = v4();
-            donatepackage.created_at = new Date();
-
-            if (await donatepackageModel.create(donatepackage)) {
-                return res.status(200).json({
-                    status: 'success',
-                    message: 'Pacote de doação criado com sucesso!',
-                });
-            } else {
-                return res.status(301).json({
-                    status: 'error',
-                    message: 'Não foi possível adicionar pacote de doação!',
-                });
-            }
-
-        } catch (err) {
+        const { name, value, donate, percent } = req.body;
+        var donatepackage = {
+            name: name,
+            value: value,
+            donate: donate,
+            percent: percent,
+        };
+        await donatepackageSchema.validateAsync(donatepackage, { abortEarly: false, });
+        donatepackage.id = v4();
+        if (await donatepackagesModel.create(donatepackage)) {
+            return res.status(200).json({
+                status: 'success',
+                message: 'Pacote de doação criado com sucesso!',
+            });
+        } else {
             return res.status(301).json({
                 status: 'error',
-                message: err.details || 'Erro interno!',
+                message: 'Não foi possível adicionar pacote de doação!',
             });
         }
     } catch (err) {
-        return res.status(500).json({
+        console.log(err);
+        return res.status(301).json({
             status: 'error',
-            message: 'Erro interno!',
+            message: err.details || 'Erro interno!',
         });
     }
 };
 
 exports.createdonateitem = async (req, res, next) => {
     try {
-        try {
-            const { id_package, itemname, item_id, eff1, eff2, eff3, effv1, effv2, effv3 } = req.body;
-
-            var donateitems = {
-                id_package: id_package,
-                itemname: itemname,
-                item_id: item_id,
-                eff1: eff1,
-                eff2: eff2,
-                eff3: eff3,
-                effv1: effv1,
-                effv2: effv2,
-                effv3: effv3,
-            };
-
-            await donateitemsSchema.validateAsync(donateitems, { abortEarly: false, });
-
-            if (await donatepackageModel.findOne({ where: { id: id_package } })) {
-                donateitems.id = v4();
-                donateitems.created_at = new Date();    
-                if (await donateitemsModel.create(donateitems)) {
-                    return res.status(200).json({
-                        status: 'success',
-                        message: 'Bonificação criada com sucesso!',
-                    });
-                } else {
-                    return res.status(301).json({
-                        status: 'error',
-                        message: 'Não foi possível criar a bonificação!',
-                    });
-                }
+        const { id_package, itemname, item_id, eff1, eff2, eff3, effv1, effv2, effv3 } = req.body;
+        var donateitems = {
+            id_package: id_package,
+            itemname: itemname,
+            item_id: item_id,
+            eff1: eff1,
+            eff2: eff2,
+            eff3: eff3,
+            effv1: effv1,
+            effv2: effv2,
+            effv3: effv3,
+        };
+        await donateitemsSchema.validateAsync(donateitems, { abortEarly: false, });
+        if (await donatepackageModel.findOne({ where: { id: id_package } })) {
+            donateitems.id = v4();
+            if (await donateitemsModel.create(donateitems)) {
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'Bonificação criada com sucesso!',
+                });
             } else {
                 return res.status(301).json({
                     status: 'error',
-                    message: 'Pacote de doação inexistente!',
+                    message: 'Não foi possível criar a bonificação!',
                 });
             }
-        } catch (err) {
-            /*req.flash('error', {
-                message: err.details || 'Erro interno!',
-            });*/
+        } else {
             return res.status(301).json({
                 status: 'error',
-                message: err.details || 'Erro interno!',
+                message: 'Pacote de doação inexistente!',
             });
         }
     } catch (err) {
-        //return res.status(500).render('dashboard/pages/errors/500');
+        return res.status(301).json({
+            status: 'error',
+            message: err.details || 'Erro interno!',
+        });
+    }
+};
+
+exports.getdonatepackages = async (req, res, next) => {
+    try {
+        const data = await donatepackagesModel.findAll();
+        return res.status(200).json({
+            status: 'success',
+            data: data,
+        });
+    } catch (err) {
+        console.log(err);
         return res.status(500).json({
             status: 'error',
             message: 'Erro interno!',
@@ -391,14 +332,15 @@ exports.createdonateitem = async (req, res, next) => {
     }
 };
 
-exports.getdonatepackages = async (req, res, next) => {
+exports.getdonateitems = async (req, res, next) => {
     try {
-        const allpackages = await donatepackageModel.findAll();
+        const data = await donateitemsModel.findAll();
         return res.status(200).json({
             status: 'success',
-            data: 'teste',
+            data: data,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             status: 'error',
             message: 'Erro interno!',

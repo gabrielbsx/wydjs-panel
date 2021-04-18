@@ -10,8 +10,6 @@ class News extends Model {
         category: DataTypes.INTEGER,
         name: DataTypes.STRING(50),
         id_user: DataTypes.UUIDV4,
-        created_at: DataTypes.DATE,
-        updated_at: DataTypes.DATE,
     }, {
       sequelize,
       modelName: 'news'

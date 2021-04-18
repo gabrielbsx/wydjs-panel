@@ -5,7 +5,7 @@ module.exports = {
     return queryInterface.createTable('rankings', {
       id: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4(),
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         unique: true,
         primaryKey: true,
@@ -62,12 +62,12 @@ module.exports = {
         allowNull: false,
         defaultValue: 1,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
       },
     });

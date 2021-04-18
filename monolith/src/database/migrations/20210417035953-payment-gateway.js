@@ -5,7 +5,7 @@ module.exports = {
     return await queryInterface.createTable('payment_gateway', {
       id: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4(),
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         unique: true,
         primaryKey: true,
@@ -23,12 +23,12 @@ module.exports = {
         type: Sequelize.STRING(),
         allowNull: false,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
       },
     });

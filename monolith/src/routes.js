@@ -36,6 +36,10 @@ routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, a
 //ADMIN
 
 routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonatepackages);
+routes.post('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonatepackage);
+
+routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
+routes.post('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
 
 
 

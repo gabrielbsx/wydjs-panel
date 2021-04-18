@@ -10,7 +10,10 @@
 <script src="public/assets/js/settings.js"></script>
 <script src="public/assets/js/todolist.js"></script>
 <script src="public/assets/js/dashboard.js"></script>
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
+<script src="https://momentjs.com/downloads/moment-with-locales.min.js"></script>
 <script>
+    moment.locale('pt-br');
     $('.message').delay(1 * 60 * 60).hide('slow');
     function setrecaptcha() {
         grecaptcha.ready(function () {
