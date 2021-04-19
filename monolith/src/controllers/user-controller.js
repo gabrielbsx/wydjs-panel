@@ -8,7 +8,7 @@ exports.index = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/login');
+        return res.status(200).render('dashboard/pages/home/login');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
     }
@@ -16,7 +16,7 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/register');
+        return res.status(200).render('dashboard/pages/home/register');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
     }
@@ -24,7 +24,7 @@ exports.register = async (req, res, next) => {
 
 exports.recovery = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/recovery');
+        return res.status(200).render('dashboard/pages/home/recovery');
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
     }

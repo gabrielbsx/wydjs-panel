@@ -1,20 +1,31 @@
-<% layout('../layouts/dashboardout.ejs') %>
-<div class="login-wrapper">
-    <div class="d-flex justify-content-center mt-5">
-        <div class="card" id="forget-card">
-            <div class="col-md-6 mx-auto">
-                <div class="card-body logo text-center">
-                    <h3>
-                        <img class="w-50" src="public/assets/images/brand.png" alt="">
-                    </h3>
-                </div>
-                <% include ../partials/messages %>
-                <div id="forms" class="card-body">
-                    <% include home/login.ejs %>
-                    <% include home/register.ejs %>
-                    <% include home/recovery.ejs %>
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <%- include('../partials/head.ejs'); %>
+    </head>
+    <body class="theme-default">
+        <div class="login-wrapper">
+            <div class="d-flex justify-content-center mt-5">
+                <div class="card" id="forget-card">
+                    <div class="col-md-6 mx-auto">
+                        <div class="card-body logo text-center">
+                            <h3>
+                                <img class="w-50" src="public/assets/images/brand.png" alt="">
+                            </h3>
+                        </div>
+                        <%- include('../partials/messages.ejs'); %>
+                        <div id="forms" class="card-body">
+                            <% if (url === '/' || url === '/login') { %>
+                                <%- include('home/login.ejs'); %>
+                            <% } else if (url === '/register') { %> 
+                                <%- include('home/register.ejs'); %>
+                            <% } else if (url === '/recovery') { %> 
+                                <%- include('home/recovery.ejs'); %>
+                            <% } %>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </body>
+</html>

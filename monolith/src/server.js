@@ -6,7 +6,6 @@ const   express     = require('express'),
         compression = require('compression'),
         jwt         = require('jsonwebtoken'),
         ejs         = require('ejs'),
-        engine      = require('ejs-locals'),
         flash       = require('express-flash-messages'),
         path        = require('path'),
         fileUpload  = require('express-fileupload'),
@@ -34,8 +33,6 @@ app.use(session({
     saveUninitialized: false,
 }));
 app.set('trust proxy', 1);
-
-app.engine('ejs', engine);
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 app.use('/public', express.static(path.join(__dirname, '/public')));

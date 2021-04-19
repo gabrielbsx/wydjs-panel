@@ -17,6 +17,9 @@ const recaptchaMiddleware = require('./middlewares/recaptcha-middleware');
 routes.use(envMiddleware);
 
 routes.get('/', isLoggedMiddleware.notLogged, userController.index);
+routes.get('/login', isLoggedMiddleware.notLogged, userController.index);
+routes.get('/recovery', isLoggedMiddleware.notLogged, userController.index);
+routes.get('/register', isLoggedMiddleware.notLogged, userController.index);
 routes.get('/home', isLoggedMiddleware.logged, dashboardController.home);
 routes.get('/logout', isLoggedMiddleware.logged, userController.logout);
 
@@ -35,11 +38,14 @@ routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, a
 
 //ADMIN
 
+
 routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonatepackages);
-routes.post('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonatepackage);
+routes.post('/donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonatepackage);
+routes.post('/update-donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonatepackage);
 
 routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
-routes.post('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
+routes.post('/donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
+routes.post('/update-donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
 
 
 

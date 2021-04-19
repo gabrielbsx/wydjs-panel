@@ -108,13 +108,12 @@ exports.recovery = async (req, res, next) => {
             .validateAsync({
                 email: email,
             });
-        return res.status(200).json({
-            status: 'success',
-            message: 'Um e-mail foi enviado para você, confirma para recuperaar sua conta!',
+        req.flash('success', {
+            message: 'Um e-mail foi enviado para você, confirma para recuperar sua conta!',
         });
+        return res.redirect('/');
     } catch (err) {
         req.flash('error', {
-            status: 'error',
             message: err.details || 'Erro interno!',
         });
         return res.redirect('/');
@@ -133,39 +132,35 @@ exports.guildmark = async (req, res, next) => {
                     if (guildmark.size <= 100000) {
                         let path = __dirname + '/../' + process.env.GUILD_PATH + 'b0' + (100000 + parseInt(guildid)) + '.bmp';
                         await guildmark.mv(path);
-                        return res.status(200).json({
-                            status: 'success',
+                        req.flash('success', {
                             message: 'Guildmark enviada com sucesso!',
                         });
                     } else {
-                        return res.status(301).json({
-                            status: 'error',
+                        req.flash('error', {
                             message: 'Guildmark muito grande!',
                         });
                     }
                 } else {
-                    return res.status(301).json({
-                        status: 'error',
+                    req.flash('error', {
                         message: 'Guildmark não é 24 bits!',
                     });
                 }
             } else {
-                return res.status(301).json({
-                    status: 'error',
+                req.flash('error', {
                     message: 'Guildmark inválido!',
                 });
             }
         } else {
-            return res.status(301).json({
-                status: 'error',
+            req.flash('error', {
                 message: 'Envie uma guildmark!',
             });
         }
+        return res.redirect('/home');
     } catch (err) {
-        return res.status(301).json({
-            status: 'error',
-            message: err.details || 'Erro interno',
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
 };
 
@@ -195,40 +190,36 @@ exports.changepassword = async (req, res, next) => {
                         }
                     });
                     if (result) {
-                        return res.status(200).json({
-                            status: 'success',
+                        req.flash('success', {
                             message: 'Senha alterada com sucesso!',
                         });
                     } else {
                         await Game.changePassword(username, oldpassword);
-                        return res.status(301).json({
-                            status: 'error',
+                        req.flash('error', {
                             message: 'Não foi possível alterar a senha!',
                         });
                     }
                 } else {
-                    return res.status(301).json({
-                        status: 'error',
+                    req.flash('error', {
                         message: 'Não foi possível alterar a senha!',
                     });
                 }
             } else {
-                return res.status(301).json({
-                    status: 'error',
+                req.flash('error', {
                     message: 'Senha antiga inválida!',
                 });
             }
         } else {
-            return res.status(301).json({
-                status: 'error',
+            req.flash('error', {
                 message: 'Conta inexistente!',
             });
         }
+        return res.redirect('/home');
     } catch (err) {
-        return res.status(301).json({
-            status: 'error',
-            message: err.details || 'Não foi possível alterar a senha!',
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
 };
 
@@ -236,10 +227,10 @@ exports.recoverynumericpassword = async (req, res, next) => {
     try {
 
     } catch (err) {
-        return res.status(301).json({
-            status: 'error',
-            message: 'Erro interno!',
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
 };
 
@@ -255,22 +246,20 @@ exports.createdonatepackage = async (req, res, next) => {
         await donatepackageSchema.validateAsync(donatepackage, { abortEarly: false, });
         donatepackage.id = v4();
         if (await donatepackagesModel.create(donatepackage)) {
-            return res.status(200).json({
-                status: 'success',
+            req.flash('success', {
                 message: 'Pacote de doação criado com sucesso!',
             });
         } else {
-            return res.status(301).json({
-                status: 'error',
+            req.flash('error', {
                 message: 'Não foi possível adicionar pacote de doação!',
             });
         }
+        return res.redirect('/home');
     } catch (err) {
-        console.log(err);
-        return res.status(301).json({
-            status: 'error',
+        req.flash('error', {
             message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
 };
 
@@ -292,27 +281,25 @@ exports.createdonateitem = async (req, res, next) => {
         if (await donatepackageModel.findOne({ where: { id: id_package } })) {
             donateitems.id = v4();
             if (await donateitemsModel.create(donateitems)) {
-                return res.status(200).json({
-                    status: 'success',
+                req.flash('success', {
                     message: 'Bonificação criada com sucesso!',
                 });
             } else {
-                return res.status(301).json({
-                    status: 'error',
+                req.flash('error', {
                     message: 'Não foi possível criar a bonificação!',
                 });
             }
         } else {
-            return res.status(301).json({
-                status: 'error',
+            req.flash('error', {
                 message: 'Pacote de doação inexistente!',
             });
         }
+        return res.redirect('/home');
     } catch (err) {
-        return res.status(301).json({
-            status: 'error',
+        req.flash('error', {
             message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
 };
 
@@ -325,22 +312,19 @@ exports.getdonatepackages = async (req, res, next) => {
                     id: id,
                 },
             });
-            return res.status(200).json({
-                status: 'success',
+            return res.render('dashboard/pages/home', {
                 data: data,
             });
         }
         const data = await donatepackagesModel.findAll();
-        return res.status(200).json({
-            status: 'success',
+        return res.render('dashboard/pages/home', {
             data: data,
         });
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({
-            status: 'error',
-            message: 'Erro interno!',
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
 };
 
@@ -353,21 +337,85 @@ exports.getdonateitems = async (req, res, next) => {
                     id: id,
                 },
             });
-            return res.status(200).json({
-                status: 'success',
+            return res.render('dashboard/pages/home', {
                 data: data,
             });
         }
         const data = await donateitemsModel.findAll();
-        return res.status(200).json({
-            status: 'success',
+        return res.render('dashboard/pages/home', {
             data: data,
         });
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({
-            status: 'error',
-            message: 'Erro interno!',
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
         });
+        return res.redirect('/home');
     }
+};
+
+exports.updatedonatepackage = async (req, res, next) => {
+    try {
+        const { id, name, value, donate, percent } = req.body;
+        var donatepackage = {
+            name: name,
+            value: value,
+            donate: donate,
+            percent: percent,
+        };
+        await donatepackageSchema.validateAsync(donatepackage, { abortEarly: false, });
+        if (await donatepackagesModel.update(donatepackage, { where: { id: id }})) {
+            req.flash('success', {
+                message: 'Pacote de doação atualizado com sucesso!',
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível atualizar o pacote de doação!',
+            });
+        }
+        return res.redirect('/home');
+    } catch (err) {
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
+        });
+        return res.redirect('/home');
+    }
+};
+
+exports.updatedonateitems = async (req, res, next) => {
+    try {
+        const { id, id_package, itemname, item_id, eff1, eff2, eff3, effv1, effv2, effv3 } = req.body;
+        var donateitems = {
+            id_package: id_package,
+            itemname: itemname,
+            item_id: item_id,
+            eff1: eff1,
+            eff2: eff2,
+            eff3: eff3,
+            effv1: effv1,
+            effv2: effv2,
+            effv3: effv3,
+        };
+        await donateitemsSchema.validateAsync(donateitems, { abortEarly: false, });
+        if (await donatepackagesModel.findOne({ where: { id: id_package }})) {
+            if (await donateitemsModel.update(donateitems, { where: { id: id }})) {
+                req.flash('success', {
+                    message: 'Bonificação atualizada com sucesso!',
+                });
+            } else {
+                req.flash('error', {
+                    message: 'Não foi possível atualizar a bonificação!',
+                });
+            }
+        } else {
+            req.flash('error', {
+                message: 'Pacote de doação inexistente!',
+            });
+        }
+        return res.redirect('/home');
+    } catch (err) {
+        req.flash('error', {
+            message: err.details || 'Erro interno!',
+        });
+        return res.redirect('/home');
+    } 
 };

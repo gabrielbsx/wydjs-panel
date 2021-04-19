@@ -1,19 +1,21 @@
-<% layout('../layouts/dashboardin.ejs') %>
-    <div class="row">
-        <div class="col-md-12 grid-margin stretch-card">
-            <% include ../partials/messages %>
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <%- include('../partials/head.ejs'); %>
+    </head>
+    <body>
+        <div class="container-scroller">
+            <%- include('../partials/header.ejs'); %>
+            <div class="container-fluid page-body-wrapper">
+                <%- include('../partials/mobile-header.ejs'); %>
+                <div class="main-panel">
+                    <div class="content-wrapper">
+                        <%- include(`user${url.replaceAll('-', '')}`); %>
+                    </div>
+                </div>
+                <%- include('../partials/footer.ejs'); %>
+            </div>
         </div>
-        <% include user/update.ejs %>
-
-        <% include user/welcome.ejs %>
-        <% include user/changepassword.ejs %>
-        <% include user/recoverynumericpassword.ejs %>
-        <% include user/guildmark.ejs %>
-        <% include user/rankingplayers.ejs %>
-        <% include user/rankingcities.ejs %>
-        <% include user/donate.ejs %>
-        <% include user/donaterules.ejs %>
-        
-        <% include admin/donatepackages.ejs %>
-        <% include admin/donateitems.ejs %>
-    </div>
+        <%- include('../partials/scripts.ejs'); %>
+    </body>
+</html>

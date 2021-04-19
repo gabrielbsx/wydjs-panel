@@ -1,5 +1,6 @@
 <script>
     //Author: Kentaro
+    /*
     var pages = [
         'home', 'donate', 'donate-rules', 'ranking-players', 'ranking-cities', 'guildmark', 'change-password', 'recovery-numeric-password',
     ];
@@ -30,6 +31,7 @@
     }
 
     async function updateApi(url, id, data) {
+        $('.update-data').text('');
         $('.update-title').text(url.replaceAll('-', ' ').replace('/', ''));
         $.ajax({
             url: url,
@@ -39,33 +41,84 @@
             success: async (data) => {
                 var data = data.data;
                 if (typeof data !== 'undefined') {
-                    var form = `<form method="POST" action="/update-${url.replace('/', '')}">`;
+                    var form = `<forms method="POST" action="/update-${url.replace('/', '')}">`;
                     
                     data.forEach(async (value, key) => {
                         Object.keys(value).forEach(async (name) => {
                             if (['createdAt', 'updatedAt'].includes(name)) return;
                             form += `
                                 <div class="form-group my-1">
-                                    <input class="form-control" type="${name === 'id' ? 'hidden' : ''}" name="${name}" value="${value[name]}">
+                                    <input class="form-control" type="${name === 'id' ? 'hidden' : 'text'}" name="${name}" value="${value[name]}">
                                 </div>
                             `;
                         });                 
                     });
-
-                    form += '<button class="btn btn-primary">Atualizar</button>';
-                
-                    form += `</form>`;
-
+                    form += `
+                        <input type="hidden" class="form-control g-recaptcha-response" name="g-recaptcha-response">
+                        <input type="hidden" class="form-control" name="action" value="validate_captcha">
+                    `;
+                    form += '<button id="submit" onclick="clickupdel(this, \'update-'+url+'\');" type="submit" class="btn btn-primary">Atualizar</button>';
+                    form += `</forms>`;
                     $('.update-data').append(form);
                 }
             },
             error: async (err) => {
-                console.log(err);
+                $(".message-ajax").append(`
+                    <div class="alert alert-${message.status === 'success' ? message.status : 'danger'}">
+                        ${message.message}
+                    </div>
+                `);
+                $(".message-ajax").show('slow');
+                setTimeout(async () => {
+                    $(".message-ajax").hide('slow');
+                }, 3000);
+                setTimeout(async () => {
+                    $(".message-ajax").empty();
+                }, 3300);
             },
         });
+        await setrecaptcha();
         $('.update').toggle('slow');
 
         $('.update-data').append(``);
+    }
+
+    async function clickupdel(button, url) {
+        var inputs = $(button).parents('forms').find(':input');
+        const method = $(button).parents('forms').attr('method');
+        var data = {};
+        url = '/' + url.replace('/', '');
+        inputs.each((key, value) => {
+            if (value.className === 'form-control' || value.className === 'g-recaptcha-response' || value.className === 'form-control g-recaptcha-response') {
+                var n = $(value).attr('name');
+                var v = $(value).attr('value');
+                data[n] = v;
+            }
+        });
+        console.log(data);
+        $.ajax({
+            url: url,
+            method: method,
+            data: data,
+            success: async (message) => {
+                console.log(message);
+            },
+            error: async (err) => {
+                $(".message-ajax").append(`
+                    <div class="alert alert-${message.status === 'success' ? message.status : 'danger'}">
+                        ${message.message}
+                    </div>
+                `);
+                $(".message-ajax").show('slow');
+                setTimeout(async () => {
+                    $(".message-ajax").hide('slow');
+                }, 3000);
+                setTimeout(async () => {
+                    $(".message-ajax").empty();
+                }, 3300);
+            },
+        });
+        return;
     }
     
     async function deleteApi(url, id) {
@@ -207,6 +260,7 @@
             });
         }
 
+        
         <% if (user.access === 3) { %>
 
             translate.haha = 'teste';
@@ -217,5 +271,7 @@
             await getApi('/donate-packages', '.list-donate-packages');
 
         <% } %>
-    });
+
+
+    });*/
 </script>

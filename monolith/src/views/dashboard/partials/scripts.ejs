@@ -16,6 +16,7 @@
     moment.locale('pt-br');
     $('.message').delay(1 * 60 * 60).hide('slow');
     function setrecaptcha() {
+        console.log('teste');
         grecaptcha.ready(function () {
             grecaptcha.execute("<%= recaptcha_site %>", {
                 action: "validate_recaptcha"
@@ -28,11 +29,7 @@
             });
         });
     }
-    setrecaptcha();
+    $(document).ready(() => {
+        setrecaptcha();
+    });
 </script>
-<% if (typeof user === 'undefined') { %>
-    <% include scripts/dashboard.ejs %>
-<% } %>
-<% if (typeof user === 'object') { %>
-    <% include scripts/logged.ejs %>
-<% } %>
