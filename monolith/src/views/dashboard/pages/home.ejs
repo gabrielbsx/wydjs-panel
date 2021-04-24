@@ -10,7 +10,8 @@
                 <%- include('../partials/mobile-header.ejs'); %>
                 <div class="main-panel">
                     <div class="content-wrapper">
-                        <%- include(`user${url.replaceAll('-', '')}`); %>
+                        <%- include('../partials/messages.ejs'); %>
+                        <%- include(`user${url.split('?')[0].replaceAll('-', '')}`); %>
                     </div>
                 </div>
                 <%- include('../partials/footer.ejs'); %>

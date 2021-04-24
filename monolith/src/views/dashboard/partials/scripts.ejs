@@ -15,8 +15,7 @@
 <script>
     moment.locale('pt-br');
     $('.message').delay(1 * 60 * 60).hide('slow');
-    function setrecaptcha() {
-        console.log('teste');
+    async function setrecaptcha() {
         grecaptcha.ready(function () {
             grecaptcha.execute("<%= recaptcha_site %>", {
                 action: "validate_recaptcha"
@@ -29,7 +28,7 @@
             });
         });
     }
-    $(document).ready(() => {
-        setrecaptcha();
+    $(document).ready(async () => {
+        await setrecaptcha();
     });
 </script>

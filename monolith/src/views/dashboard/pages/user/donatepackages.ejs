@@ -1,16 +1,39 @@
-<div style="display: none;" class="col-md-12 grid-margin stretch-card donate-packages">
+<div class="col-md-12 grid-margin stretch-card donate-packages">
     <div class="card">
         <div class="card-body">
             <div class="d-flex flex-row justify-content-between border-bottom">
                 Lista de pacotes de doações
             </div>
             <div class="d-flex flex-row row px-4 justify-content-center my-2 py-4 text-center list-donate-packages">
+                <table class="table table-dark table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nome do pacote</th>
+                            <th>Valor [R$]</th>
+                            <th>Valor [Donate]</th>
+                            <th>Bônus [%]</th>
+                            <th colspan="2">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% data.forEach((value, key) => { %>
+                            <tr>
+                                <td><%= value.name %></td>
+                                <td><%= value.value %></td>
+                                <td><%= value.donate %></td>
+                                <td><%= value.percent %></td>
+                                <td><a class="btn btn-primary" href="/update-donate-packages?id=<%= value.id %>">Atualizar</a></td>
+                                <td><a class="btn btn-danger" href="/delete-donate-packages?id=<%= value.id %>">Deletar</a></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<div style="display: none;" class="col-md-12 grid-margin stretch-card donate-packages">
+<div class="col-md-12 grid-margin stretch-card donate-packages">
     <div class="card">
         <div class="card-body">
             <div class="d-flex flex-row justify-content-between border-bottom">

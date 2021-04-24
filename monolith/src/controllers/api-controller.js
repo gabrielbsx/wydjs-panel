@@ -54,12 +54,12 @@ exports.register = async (req, res, next) => {
                 message: 'Conta existente!',
             });
         }
-        return res.redirect('/');
+        return res.redirect('/register');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/');
+        return res.redirect('/register');
     }
 }
 
@@ -91,12 +91,12 @@ exports.login = async (req, res, next) => {
                 message: 'Não foi possível efetuar o login!',
             });
         }
-        return res.redirect('/');
+        return res.redirect('/login');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno',
         });
-        return res.redirect('/');
+        return res.redirect('/login');
     }
 }
 
@@ -111,12 +111,12 @@ exports.recovery = async (req, res, next) => {
         req.flash('success', {
             message: 'Um e-mail foi enviado para você, confirma para recuperar sua conta!',
         });
-        return res.redirect('/');
+        return res.redirect('/recovery');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/');
+        return res.redirect('/recovery');
     }
 };
 
@@ -155,12 +155,12 @@ exports.guildmark = async (req, res, next) => {
                 message: 'Envie uma guildmark!',
             });
         }
-        return res.redirect('/home');
+        return res.redirect('/guildmark');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/guildmark');
     }
 };
 
@@ -214,12 +214,12 @@ exports.changepassword = async (req, res, next) => {
                 message: 'Conta inexistente!',
             });
         }
-        return res.redirect('/home');
+        return res.redirect('/change-password');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/change-password');
     }
 };
 
@@ -230,7 +230,7 @@ exports.recoverynumericpassword = async (req, res, next) => {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/recovery-numeric-password');
     }
 };
 
@@ -254,12 +254,12 @@ exports.createdonatepackage = async (req, res, next) => {
                 message: 'Não foi possível adicionar pacote de doação!',
             });
         }
-        return res.redirect('/home');
+        return res.redirect('/donate-packages');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/donate-packages');
     }
 };
 
@@ -294,12 +294,12 @@ exports.createdonateitem = async (req, res, next) => {
                 message: 'Pacote de doação inexistente!',
             });
         }
-        return res.redirect('/home');
+        return res.redirect('/donate-items');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/donate-items');
     }
 };
 
@@ -324,7 +324,7 @@ exports.getdonatepackages = async (req, res, next) => {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/donate-packages');
     }
 };
 
@@ -342,14 +342,38 @@ exports.getdonateitems = async (req, res, next) => {
             });
         }
         const data = await donateitemsModel.findAll();
+        const packages = await donatepackagesModel.findAll();
         return res.render('dashboard/pages/home', {
             data: data,
+            packages: packages,
         });
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/donate-items');
+    }
+};
+
+exports.getupdonatepackage = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const packages = await donatepackagesModel.findOne({ id: id, });
+        if (packages) {
+            return res.render('dashboard/pages/home', {
+                data: packages,
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível encontrar o pacote de doação!',
+            });
+        }
+        return res.redirect('/donate-packages');
+    } catch (err) {
+        req.flash('error', {
+            message: 'Não foi possível encontrar o pacote de doação!',
+        });
+        return res.redirect('/donate-packages');
     }
 };
 
@@ -372,12 +396,34 @@ exports.updatedonatepackage = async (req, res, next) => {
                 message: 'Não foi possível atualizar o pacote de doação!',
             });
         }
-        return res.redirect('/home');
+        return res.redirect('/donate-packages');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/donate-packages');
+    }
+};
+
+exports.getupdonateitem = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const item = await donateitemsModel.findOne({ id: id, });
+        if (item) {
+            return res.render('dashboard/pages/home', {
+                data: item,
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível encontrar a bonificação!',
+            });
+        }
+        return res.redirect('/donate-items');
+    } catch (err) {
+        req.flash('error', {
+            message: 'Não foi possível encontrar a bonificação!',
+        });
+        return res.redirect('/donate-items');
     }
 };
 
@@ -411,11 +457,11 @@ exports.updatedonateitems = async (req, res, next) => {
                 message: 'Pacote de doação inexistente!',
             });
         }
-        return res.redirect('/home');
+        return res.redirect('/donate-items');
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/home');
+        return res.redirect('/donate-items');
     } 
 };

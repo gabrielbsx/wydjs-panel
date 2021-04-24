@@ -20,7 +20,15 @@ routes.get('/', isLoggedMiddleware.notLogged, userController.index);
 routes.get('/login', isLoggedMiddleware.notLogged, userController.index);
 routes.get('/recovery', isLoggedMiddleware.notLogged, userController.index);
 routes.get('/register', isLoggedMiddleware.notLogged, userController.index);
+
 routes.get('/home', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/change-password', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/recovery-numeric-password', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/guildmark', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/ranking-players', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/ranking-cities', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/donate', isLoggedMiddleware.logged, dashboardController.home);
+routes.get('/donate-rules', isLoggedMiddleware.logged, dashboardController.home);
 routes.get('/logout', isLoggedMiddleware.logged, userController.logout);
 
 
@@ -34,7 +42,7 @@ routes.post('/recovery', recaptchaMiddleware, isLoggedMiddleware.notLogged, apiC
 routes.post('/register', recaptchaMiddleware, isLoggedMiddleware.notLogged, apiController.register);
 routes.post('/login', recaptchaMiddleware, isLoggedMiddleware.notLogged, apiController.login);
 routes.post('/guildmark', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.guildmark);
-routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.changepassword);
+routes.post('/change-password', recaptchaMiddleware, isLoggedMiddleware.logged, apiController.changepassword);
 
 //ADMIN
 
@@ -42,10 +50,12 @@ routes.post('/changepassword', recaptchaMiddleware, isLoggedMiddleware.logged, a
 routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonatepackages);
 routes.post('/donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonatepackage);
 routes.post('/update-donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonatepackage);
+routes.get('/update-donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonatepackage);
 
 routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
 routes.post('/donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
 routes.post('/update-donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
+routes.get('/update-donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonateitem);
 
 
 
