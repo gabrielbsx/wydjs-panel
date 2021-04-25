@@ -30,8 +30,8 @@
                                 <td><%= value.effv2 %></td>
                                 <td><%= value.eff3 %></td>
                                 <td><%= value.effv3 %></td>
-                                <td><a class="btn btn-primary" href="/update-donate-items?id=<%= value.id %>">Atualizar</a></td>
-                                <td><a class="btn btn-danger" href="/delete-donate-items?id=<%= value.id %>">Deletar</a></td>
+                                <td><a class="btn btn-primary" href="/update-donate-items/<%= value.id %>">Atualizar</a></td>
+                                <td><a class="btn btn-danger" href="/delete-donate-items/<%= value.id %>">Deletar</a></td>
                             </tr>
                         <% }); %>
                     </tbody>

@@ -22,9 +22,9 @@
                                 <td><%= value.value %></td>
                                 <td><%= value.donate %></td>
                                 <td><%= value.percent %></td>
-                                <td><a class="btn btn-primary" href="/update-donate-packages?id=<%= value.id %>">Atualizar</a></td>
-                                <td><a class="btn btn-warning" href="/list-donate-items?id=<%= value.id %>">Lista de itens</a></td>
-                                <td><a class="btn btn-danger" href="/delete-donate-packages?id=<%= value.id %>">Deletar</a></td>
+                                <td><a class="btn btn-primary" href="/update-donate-packages/<%= value.id %>">Atualizar</a></td>
+                                <td><a class="btn btn-warning" href="/list-donate-items/<%= value.id %>">Lista de itens</a></td>
+                                <td><a class="btn btn-danger" href="/delete-donate-packages/<%= value.id %>">Deletar</a></td>
                             </tr>
                         <% }); %>
                     </tbody>

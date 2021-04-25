@@ -49,14 +49,14 @@ routes.post('/change-password', recaptchaMiddleware, isLoggedMiddleware.logged, 
 
 routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonatepackages);
 routes.post('/donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonatepackage);
-routes.post('/update-donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonatepackage);
-routes.get('/update-donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonatepackage);
+routes.post('/update-donate-packages/:id', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonatepackage);
+routes.get('/update-donate-packages/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonatepackage);
 
 routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
-routes.get('/list-donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.listdonateitems);
+routes.get('/list-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.listdonateitems);
 routes.post('/donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
-routes.post('/update-donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
-routes.get('/update-donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonateitem);
+routes.post('/update-donate-items/:id', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
+routes.get('/update-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonateitem);
 
 
 
