@@ -4,7 +4,7 @@
             <div class="d-flex flex-row justify-content-between border-bottom">
                 Lista de pacotes de doações
             </div>
-            <div class="d-flex flex-row row px-4 justify-content-center my-2 py-4 text-center list-donate-packages">
+            <div class="d-flex table-responsive flex-row row px-4 justify-content-center my-2 py-4 text-center list-donate-packages">
                 <table class="table table-dark table-hover table-striped">
                     <thead>
                         <tr>
@@ -23,6 +23,7 @@
                                 <td><%= value.donate %></td>
                                 <td><%= value.percent %></td>
                                 <td><a class="btn btn-primary" href="/update-donate-packages?id=<%= value.id %>">Atualizar</a></td>
+                                <td><a class="btn btn-warning" href="/list-donate-items?id=<%= value.id %>">Lista de itens</a></td>
                                 <td><a class="btn btn-danger" href="/delete-donate-packages?id=<%= value.id %>">Deletar</a></td>
                             </tr>
                         <% }); %>
@@ -46,13 +47,13 @@
                             <input class="form-control" name="name" type="text" placeholder="Nome do pacote de doação">
                         </div>
                         <div class="form-group my-1">
-                            <input class="form-control" name="value" type="integer" placeholder="Valor a ser pago">
+                            <input class="form-control" name="value" type="number" placeholder="Valor a ser pago">
                         </div>
                         <div class="form-group my-1">
-                            <input class="form-control" name="donate" type="integer" placeholder="Valor do donate">
+                            <input class="form-control" name="donate" type="number" placeholder="Valor do donate">
                         </div>
                         <div class="form-group my-1">
-                            <input class="form-control" name="percent" type="integer" placeholder="Porcentagem de bonificação">
+                            <input class="form-control" name="percent" type="number" placeholder="Porcentagem de bonificação">
                         </div>
                         <input type="hidden" class="g-recaptcha-response" name="g-recaptcha-response">
                         <input type="hidden" name="action" value="validate_captcha">

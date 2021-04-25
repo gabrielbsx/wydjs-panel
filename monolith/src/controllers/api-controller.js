@@ -10,6 +10,7 @@ const donateitemsModel = require('../models/donateitems-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
+const Users = require('../models/users-model');
 
 exports.register = async (req, res, next) => {
     try {
@@ -277,8 +278,9 @@ exports.createdonateitem = async (req, res, next) => {
             effv2: effv2,
             effv3: effv3,
         };
+        
         await donateitemsSchema.validateAsync(donateitems, { abortEarly: false, });
-        if (await donatepackageModel.findOne({ where: { id: id_package } })) {
+        if (await donatepackagesModel.findOne({ where: { id: id_package } })) {
             donateitems.id = v4();
             if (await donateitemsModel.create(donateitems)) {
                 req.flash('success', {
@@ -296,6 +298,7 @@ exports.createdonateitem = async (req, res, next) => {
         }
         return res.redirect('/donate-items');
     } catch (err) {
+        console.log(err);
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
@@ -305,7 +308,7 @@ exports.createdonateitem = async (req, res, next) => {
 
 exports.getdonatepackages = async (req, res, next) => {
     try {
-        const { id } = req.body;
+        const { id } = req.query;
         if (typeof id !== 'undefined') {
             const data = await donatepackagesModel.findOne({
                 where: {
@@ -330,7 +333,7 @@ exports.getdonatepackages = async (req, res, next) => {
 
 exports.getdonateitems = async (req, res, next) => {
     try {
-        const { id } = req.body;
+        const { id } = req.query;
         if (typeof id !== 'undefined') {
             const data = await donateitemsModel.findOne({
                 where: {
@@ -357,11 +360,33 @@ exports.getdonateitems = async (req, res, next) => {
 
 exports.getupdonatepackage = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const packages = await donatepackagesModel.findOne({ id: id, });
+        const { id } = req.query;
+        const packages = await donatepackagesModel.findOne({ where: { id: id, } });
         if (packages) {
             return res.render('dashboard/pages/home', {
                 data: packages,
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível encontrar o pacote de doação!',
+            });
+        }
+        return res.redirect('/donate-packages');
+    } catch (err) {
+        req.flash('error', {
+            message: 'Não foi possível encontrar o pacote de doação!',
+        });
+        return res.redirect('/donate-packages');
+    }
+};
+
+exports.listdonateitems = async (req, res, next) => {
+    try {
+        const { id } = req.query;
+        const items = await donateitemsModel.findAll({ where:{ id_package: id, } });
+        if (items) {
+            return res.render('dashboard/pages/home', {
+                data: items,
             });
         } else {
             req.flash('error', {
@@ -405,13 +430,16 @@ exports.updatedonatepackage = async (req, res, next) => {
     }
 };
 
+
 exports.getupdonateitem = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.query;
         const item = await donateitemsModel.findOne({ id: id, });
+        const packages = await donatepackagesModel.findAll();
         if (item) {
             return res.render('dashboard/pages/home', {
                 data: item,
+                packages: packages,
             });
         } else {
             req.flash('error', {
