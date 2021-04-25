@@ -319,7 +319,15 @@ exports.getdonatepackages = async (req, res, next) => {
                 data: data,
             });
         }
-        const data = await donatepackagesModel.findAll();
+        var { page } = req.query;
+        page = parseInt(page) || 1;
+        if (typeof page === 'undefined' || page < 1) {
+            page = 1;
+        }
+        const data = await donatepackagesModel.findAndCountAll({
+            limit: 5,
+            offset: (page - 1) * 5 || 0 * 5,
+        });
         return res.render('dashboard/pages/home', {
             data: data,
         });
@@ -344,7 +352,15 @@ exports.getdonateitems = async (req, res, next) => {
                 data: data,
             });
         }
-        const data = await donateitemsModel.findAll();
+        var { page } = req.query;
+        page = parseInt(page) || 1;
+        if (typeof page === 'undefined' || page < 1) {
+            page = 1;
+        }
+        const data = await donateitemsModel.findAndCountAll({
+            limit: 5,
+            offset: (page - 1) * 5 || 0 * 5,
+        });
         const packages = await donatepackagesModel.findAll();
         return res.render('dashboard/pages/home', {
             data: data,
@@ -407,7 +423,6 @@ exports.listdonateitems = async (req, res, next) => {
         }
         return res.redirect('/donate-packages');
     } catch (err) {
-        console.log(err);
         req.flash('error', {
             message: 'Não foi possível encontrar o pacote de doação!',
         });
@@ -447,13 +462,10 @@ exports.updatedonatepackage = async (req, res, next) => {
 exports.getupdonateitem = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { page } = req.query;
         const item = await donateitemsModel.findOne({
             where: {
                 id: id,
-            },
-            limit: 5,
-            offset: parseInt(page) * 5,
+            }
         });
         const packages = await donatepackagesModel.findAll();
         if (item) {

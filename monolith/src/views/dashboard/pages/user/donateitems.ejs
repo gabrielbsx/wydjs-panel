@@ -20,7 +20,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.forEach((value, key) => { %>
+                        <% data.rows.forEach((value, key) => { %>
                             <tr>
                                 <td><%= value.itemname %></td>
                                 <td><%= value.item_id %></td>
@@ -37,6 +37,7 @@
                     </tbody>
                 </table>
             </div>
+            <%- include('../../partials/pagination.ejs') %>
         </div>
     </div>
 </div>
