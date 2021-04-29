@@ -51,13 +51,14 @@ routes.get('/donate-packages', isLoggedMiddleware.logged, isAdminMiddleware, api
 routes.post('/donate-packages', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonatepackage);
 routes.post('/update-donate-packages/:id', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonatepackage);
 routes.get('/update-donate-packages/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonatepackage);
+routes.get('/delete-donate-packages/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.deletedonatepackage);
 
-routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
+//routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
 routes.get('/list-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.listdonateitems);
 routes.post('/donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
 routes.post('/update-donate-items/:id', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
 routes.get('/update-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonateitem);
-
+routes.get('/delete-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.deletedonateitem);
 
 
 routes.use(errorController.error404);

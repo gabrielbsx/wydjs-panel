@@ -326,7 +326,7 @@ exports.getdonatepackages = async (req, res, next) => {
         }
         const data = await donatepackagesModel.findAndCountAll({
             limit: 5,
-            offset: (page - 1) * 5 || 0 * 5,
+            offset: (page - 1) * 5 || 0,
         });
         return res.render('dashboard/pages/home', {
             data: data,
@@ -359,7 +359,7 @@ exports.getdonateitems = async (req, res, next) => {
         }
         const data = await donateitemsModel.findAndCountAll({
             limit: 5,
-            offset: (page - 1) * 5 || 0 * 5,
+            offset: (page - 1) * 5 || 0,
         });
         const packages = await donatepackagesModel.findAll();
         return res.render('dashboard/pages/home', {
@@ -409,7 +409,7 @@ exports.listdonateitems = async (req, res, next) => {
                 id_package: id,
             },
             limit: 5,
-            offset: (page - 1) * 5 || 0 * 5,
+            offset: (page - 1) * 5 || 0,
         });
         if (items) {
             return res.render('dashboard/pages/home', {
@@ -524,4 +524,45 @@ exports.updatedonateitems = async (req, res, next) => {
         });
         return res.redirect('/donate-items');
     } 
+};
+
+exports.deletedonateitem = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (await donateitemsModel.destroy({ where: { id: id, }})) {
+            req.flash('success', {
+                message: 'Bonificação deletada com sucesso!',
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível deletar a bonificação!',
+            });
+        }
+        return res.redirect('/donate-items');
+    } catch (err) {
+        req.flash('error', {
+            message: 'Não foi possível deletar a bonificação!',
+        });
+    }
+};
+
+exports.deletedonatepackage = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (await donatepackagesModel.destroy({ where: { id: id, }})) {
+            await donateitemsModel.destroy({ where: { id_package: id, }});
+            req.flash('success', {
+                message: 'Pacote de doação deletada com sucesso!',
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível deletar o pacote de doação!',
+            });
+        }
+        return res.redirect('/donate-packages');
+    } catch (err) {
+        req.flash('error', {
+            message: 'Não foi possível deletar o pacote de doação!',
+        });
+    }
 };
