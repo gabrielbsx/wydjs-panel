@@ -517,12 +517,12 @@ exports.updatedonateitems = async (req, res, next) => {
                 message: 'Pacote de doação inexistente!',
             });
         }
-        return res.redirect('/donate-items');
+        return res.redirect(`/list-donate-items/${id_package}`);
     } catch (err) {
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });
-        return res.redirect('/donate-items');
+        return res.redirect('/donate-packages');
     } 
 };
 
