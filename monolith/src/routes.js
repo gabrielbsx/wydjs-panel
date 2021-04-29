@@ -56,7 +56,7 @@ routes.get('/delete-donate-packages/:id', isLoggedMiddleware.logged, isAdminMidd
 //routes.get('/donate-items', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getdonateitems);
 routes.get('/list-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.listdonateitems);
 routes.post('/donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
-routes.post('/update-donate-items/:id', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
+routes.post('/update-donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
 routes.get('/update-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.getupdonateitem);
 routes.get('/delete-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.deletedonateitem);
 
