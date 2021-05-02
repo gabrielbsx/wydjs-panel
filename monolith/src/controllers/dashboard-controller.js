@@ -1,3 +1,6 @@
+const donatepackagesModel = require('../models/donatepackages-model');
+const donateitemsModel = require('../models/donateitems-model');
+
 exports.home = async (req, res, next) => {
     try {
         return res.status(200).render('dashboard/pages/home', {
@@ -10,7 +13,7 @@ exports.home = async (req, res, next) => {
 
 exports.guildmark = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/guildmark', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'guildmark',
         });
     } catch (err) {
@@ -20,7 +23,7 @@ exports.guildmark = async (req, res, next) => {
 
 exports.changepassword = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/changepassword', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'changepassword',
         });
     } catch (err) {
@@ -30,7 +33,7 @@ exports.changepassword = async (req, res, next) => {
 
 exports.recoverynumericpassword = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/recoverynumericpassword', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'recoverypassword',
         });
     } catch (err) {
@@ -40,7 +43,7 @@ exports.recoverynumericpassword = async (req, res, next) => {
 
 exports.donate = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/donate', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'donate',
         });
     } catch (err) {
@@ -50,7 +53,7 @@ exports.donate = async (req, res, next) => {
 
 exports.donaterules = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/donaterules', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'donaterules',
         });
     } catch (err) {
@@ -60,7 +63,7 @@ exports.donaterules = async (req, res, next) => {
 
 exports.rankingplayers = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/rankingplayers', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'rankingplayers',
         });
     } catch (err) {
@@ -70,7 +73,7 @@ exports.rankingplayers = async (req, res, next) => {
 
 exports.rankingcities = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/user/rankingcities', {
+        return res.status(200).render('dashboard/pages/home', {
             layout: 'rankingcities',
         });
     } catch (err) {
@@ -106,6 +109,7 @@ exports.donatepackages = async (req, res, next) => {
             data: data,
         });
     } catch (err) {
+        console.log(err);
         req.flash('error', {
             message: err.details || 'Erro interno!',
         });

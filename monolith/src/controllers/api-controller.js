@@ -77,9 +77,9 @@ exports.login = async (req, res, next) => {
         if (user) {
             if (await bcrypt.compare(password, user.password)) {
                 delete user.password;
-                req.flash('success', {
+                /*req.flash('success', {
                     message: 'Login efetuado com sucesso!',
-                });
+                });*/
                 req.session.user = user;
                 return res.redirect('/home');
             } else {

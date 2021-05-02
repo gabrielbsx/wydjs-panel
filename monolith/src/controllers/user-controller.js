@@ -10,7 +10,7 @@ exports.index = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/home/login', {
+        return res.status(200).render('dashboard/pages/index', {
             layout: 'login',
         });
     } catch (err) {
@@ -20,7 +20,7 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/home/register', {
+        return res.status(200).render('dashboard/pages/index', {
             layout: 'register',
         });
     } catch (err) {
@@ -30,7 +30,7 @@ exports.register = async (req, res, next) => {
 
 exports.recovery = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/home/recovery', {
+        return res.status(200).render('dashboard/pages/index    ', {
             layout: 'recovery',
         });
     } catch (err) {
