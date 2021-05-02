@@ -11,6 +11,15 @@ userModel.init(conn);
 newsModel.init(conn);
 donatepackagesModel.init(conn);
 donateitemsModel.init(conn);
-//userModel.associate(conn.models);
+
+/**
+ * FOREIGN KEYS
+ */
+
+donatepackagesModel.hasMany(donateitemsModel, { foreignKey: 'id_package' });
+donateitemsModel.belongsTo(donatepackagesModel, { foreignKey: 'id_package' });
+
+userModel.hasMany(newsModel, { foreignKey: 'id_user' });
+newsModel.belongsTo(userModel, { foreignKey: 'id_user' });
 
 module.exports = conn;

@@ -43,10 +43,24 @@ exports.recoverynumericpassword = async (req, res, next) => {
 
 exports.donate = async (req, res, next) => {
     try {
+        var { page } = req.query;
+        page = parseInt(page) || 1;
+        if (typeof page === 'undefined' || page < 1) {
+            page = 1;
+        }
+        const donate = await donatepackagesModel.findAndCountAll({
+            limit: 5,
+            offset: (page - 1) * 5 || 0,
+            include: [{
+                model: donateitemsModel,
+            }],
+        });
         return res.status(200).render('dashboard/pages/home', {
             layout: 'donate',
+            data: donate,
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).render('dashboard/pages/errors/500');
     }
 };
