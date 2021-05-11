@@ -10,17 +10,29 @@
                         <tr>
                             <th>Pacote</th>
                             <th>Valor a doar</th>
-                            <th>Valor a receber</th>
+                            <th>Valor a receber s/ bônus</th>
+                            <th>Valor a receber c/ bônus</th>
                             <th>Bônus</th>
+                            <th>Formas de pagamento</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <%= dump(data.rows) %>
                         <% data.rows.forEach(async (value, key) => { %>
                             <tr>
                                 <td><%= value.name %></td>
                                 <td class="currency"><%= value.value %></td>
                                 <td><%= value.donate %></td>
+                                <td><%= value.donate + (value.donate * value.percent) %></td>
                                 <td><%= value.percent %>%</td>
+                                <td>
+                                    <a class="btn btn-primary">
+                                        Picpay
+                                    </a>
+                                    <a class="btn btn-primary">
+                                        Mercadopago
+                                    </a>
+                                </td>
                             </tr>
                         <% }); %>
                     </tbody>

@@ -1,5 +1,6 @@
 const donatepackagesModel = require('../models/donatepackages-model');
 const donateitemsModel = require('../models/donateitems-model');
+const paymentGatewayModel = require('../models/paymentgateway-model');
 
 exports.home = async (req, res, next) => {
     try {
@@ -254,3 +255,16 @@ exports.changedonateitem = async (req, res, next) => {
         return res.redirect('/donate-items');
     }
 };
+
+exports.paymentgateway = async (req, res, next) => {
+    try {
+        const gateways = await paymentGatewayModel.findAll();
+
+        return res.render('dashboard/pages/home', {
+            layout: 'paymentgateway',
+            data: gateways,
+        });
+    } catch (err) {
+        return res.redirect('/');
+    }
+}
