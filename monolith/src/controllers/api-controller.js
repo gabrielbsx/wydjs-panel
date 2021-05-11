@@ -7,10 +7,12 @@ const donateitemsSchema = require('../schemas/donateitems-schema');
 const userModel = require('../models/users-model');
 const donatepackagesModel = require('../models/donatepackages-model');
 const donateitemsModel = require('../models/donateitems-model');
+const paymentGatewayModel = require('../models/paymentgateway-model');
+const Users = require('../models/users-model');
 const Game = new (require('../helpers/game'))();
 const bcrypt = require("bcryptjs");
 const { v4 } = require('uuid');
-const Users = require('../models/users-model');
+const axios = require('axios');
 
 exports.register = async (req, res, next) => {
     try {
@@ -126,6 +128,8 @@ exports.guildmark = async (req, res, next) => {
         const { guildid } = req.body;
         const { guildmark } = req.files;
         await guildmarkSchema.validateAsync({ guildid: guildid }, { abortEarly: false, });
+
+
         
         if (typeof guildmark !== 'undefined') {
             if (guildmark.mimetype === 'image/bmp') {
@@ -411,5 +415,40 @@ exports.deletedonatepackage = async (req, res, next) => {
         req.flash('error', {
             message: 'Não foi possível deletar o pacote de doação!',
         });
+    }
+};
+
+exports.picpay = async (req, res, next) => {
+    try {
+        const { key, token } = await paymentGatewayModel.findOne({
+            where: {
+                name: 'picpay',
+            },
+        });
+
+        if (typeof key !== 'undefined' && typeof token !== 'undefined') {
+            const _request = axios.post('https://appws.picpay.com/ecommerce/public/payments', {
+                callbackUrl: '',
+                expiresAt: new Date ((new Date.getTime()) + (1000 * 60 * 60 * 24 * 2)),
+                returnUrl: '',
+                value: 10,
+                buyer: {
+                    firstName: '',
+                    lastName: '',
+                    document: '',
+                },
+            }, {
+                headers: {
+                    'x-picpay-token': token,
+                    'Content-Type': 'application/json',
+                }
+            })
+        }
+
+        return res.render('/donate/picpay');
+
+    } catch (err) {
+        console.log(err);
+        return res.redirect('/home');
     }
 };
