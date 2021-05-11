@@ -11,7 +11,7 @@
                 <div class="main-panel">
                     <div class="content-wrapper">
                         <%- include('../partials/messages.ejs'); %>
-                        <%- include(`user/${url.split('/')[1].replaceAll('-', '').split('?')[0]}`); %>
+                        <%- include(`user/${layout}`); %>
                     </div>
                 </div>
                 <%- include('../partials/footer.ejs'); %>

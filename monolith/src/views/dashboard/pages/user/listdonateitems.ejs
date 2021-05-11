@@ -20,7 +20,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.rows.forEach((value, key) => { %>
+                        <% data.rows.forEach(async (value, key) => { %>
                             <tr>
                                 <td><%= value.itemname %></td>
                                 <td><%= value.item_id %></td>

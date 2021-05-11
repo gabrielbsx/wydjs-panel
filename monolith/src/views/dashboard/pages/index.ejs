@@ -15,13 +15,7 @@
                         </div>
                         <%- include('../partials/messages.ejs'); %>
                         <div id="forms" class="card-body">
-                            <% if (url === '/' || url === '/login') { %>
-                                <%- include('home/login.ejs'); %>
-                            <% } else if (url === '/register') { %> 
-                                <%- include('home/register.ejs'); %>
-                            <% } else if (url === '/recovery') { %> 
-                                <%- include('home/recovery.ejs'); %>
-                            <% } %>
+                            <%- include(`home/${layout}`); %>
                         </div>
                     </div>
                 </div>

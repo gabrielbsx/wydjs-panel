@@ -1,4 +1,3 @@
-<%= dump(data.rows) %>
 <div class="col-md-8 grid-margin stretch-card donate">
     <div class="card">
         <div class="card-body">
@@ -16,14 +15,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.rows.forEach(async (value, key) => {
+                        <% data.rows.forEach(async (value, key) => { %>
                             <tr>
                                 <td><%= value.name %></td>
-                                <td><%= value.value %></td>
+                                <td class="currency"><%= value.value %></td>
                                 <td><%= value.donate %></td>
                                 <td><%= value.percent %>%</td>
                             </tr>
-                        });
+                        <% }); %>
                     </tbody>
                 </table>
             </div>
