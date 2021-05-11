@@ -265,6 +265,7 @@ exports.paymentgateway = async (req, res, next) => {
             data: gateways,
         });
     } catch (err) {
+        console.log(err);
         return res.redirect('/');
     }
 }

@@ -449,6 +449,44 @@ exports.picpay = async (req, res, next) => {
 
     } catch (err) {
         console.log(err);
-        return res.redirect('/home');
+        return res.redirect('/');
+    }
+};
+
+exports.creategateway = async (req, res, next) => {
+    try {
+        const { name, key, token } = req.body;
+
+        if (name === 'Mercado Pago' || name === 'Picpay') {
+            if (typeof key !== 'undefined' && token !== 'undefined') {
+                const data = await paymentGatewayModel.create({
+                    name: name,
+                    key: key,
+                    token: token,
+                });
+                if (data) {
+                    req.flash('success', {
+                        message: 'Gateway adicionado com sucesso!',
+                    });
+                } else {
+                    req.flash('error', {
+                        message: 'Não foi possível adicionar o gateway!',
+                    });
+                }
+            } else {
+                req.flash('error', {
+                    message: 'Requisição inválida!',
+                });
+            }
+        } else {
+            req.flash('error', {
+                message: 'Somente permitido: mercado pago ou picpay.',
+            });
+        }
+
+        return res.redirect('/payment-gateway');
+    } catch (err) {
+        console.log(err);
+        return res.redirect('/');
     }
 };

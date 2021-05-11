@@ -1,4 +1,4 @@
-<div class="col-md-12 grid-margin stretch-card donate-packages">
+<div class="col-md-12 grid-margin stretch-card payment-gateway">
     <div class="card">
         <div class="card-body">
             <div class="d-flex flex-row justify-content-between border-bottom">
@@ -16,27 +16,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% data.rows.forEach((value, key)=> { %>
-                            <tr>
-                                <td>
-                                    <%= value.name %>
-                                </td>
-                                <td>
-                                    *************
-                                </td>
-                                <td>
-                                    *****************************
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary" href="/update-payment-gateway/<%= value.id %>">
-                                        Atualizar
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-danger" href="/delete-payment-gateway/<%= value.id %>">Deletar</a>
-                                </td>
-                            </tr>
-                        <% }); %>
+                        <% if (data.length > 0) { %>
+                            <% data.rows.forEach((value, key)=> { %>
+                                <tr>
+                                    <td>
+                                        <%= value.name %>
+                                    </td>
+                                    <td>
+                                        *************
+                                    </td>
+                                    <td>
+                                        *****************************
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary" href="/update-payment-gateway/<%= value.id %>">
+                                            Atualizar
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-danger" href="/delete-payment-gateway/<%= value.id %>">Deletar</a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
@@ -45,45 +47,40 @@
     </div>
 </div>
 
-<div class="col-md-12 grid-margin stretch-card payment-gateways">
+<div class="col-md-12 grid-margin stretch-card payment-gateway">
     <div class="card">
         <div class="card-body">
             <div class="d-flex flex-row justify-content-between border-bottom">
                 Adicionar gateway de pagamento
             </div>
             <div class="d-flex flex-row row px-4 justify-content-center my-2 bg-dark py-4 text-center">
-                <div class="col-md-12 my-2 bg-dark text-light">
-                    Únicas gateways aceitas, por hora, são: picpay e mercado pago.
-                </div>
                 <div class="justify-content-center text-center mx-auto">
                     <form method="POST" action="/payment-gateway">
                         <div class="input-group my-1">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">Nome do pacote</span>
+                                <span class="input-group-text">Nome da gateway</span>
                             </div>
-                            <input class="form-control" name="name" type="text" placeholder="">
+                            <select class="form-control" name="name">
+                                <option value="Mercado Pago">Mercado Pago</option>
+                                <option value="Picpay">Picpay</option>
+                            </select>
                         </div>
                         <div class="input-group my-1">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">Valor em donate</span>
+                                <span class="input-group-text">Key / Client ID</span>
                             </div>
-                            <input class="form-control" name="donate" type="number" placeholder="">
+                            <input class="form-control" name="key" type="text" placeholder="">
                             <div class="mx-1"></div>
                             <div class="input-group-prepend">
-                                <span class="input-group-text">Valor de doação</span>
+                                <span class="input-group-text">Token</span>
                             </div>
-                            <input class="form-control" name="value" type="number" placeholder="">
-                            <div class="mx-1"></div>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Porcentagem</span>
-                            </div>
-                            <input class="form-control" name="percent" type="number" placeholder="">
+                            <input class="form-control" name="token" type="text" placeholder="">
                         </div>
                         <input type="hidden" class="g-recaptcha-response" name="g-recaptcha-response">
                         <input type="hidden" name="action" value="validate_captcha">
                         <div class="form-group mt-3 mb-1">
                             <button type="submit" class="btn btn-primary">
-                                Criar
+                                Adicionar
                             </button>
                         </div>
                     </form>
