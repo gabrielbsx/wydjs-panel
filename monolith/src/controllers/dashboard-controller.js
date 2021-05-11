@@ -34,7 +34,7 @@ exports.changepassword = async (req, res, next) => {
 exports.recoverynumericpassword = async (req, res, next) => {
     try {
         return res.status(200).render('dashboard/pages/home', {
-            layout: 'recoverypassword',
+            layout: 'recoverynumericpassword',
         });
     } catch (err) {
         return res.status(500).render('dashboard/pages/errors/500');
