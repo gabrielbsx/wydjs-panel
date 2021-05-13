@@ -458,7 +458,7 @@ exports.creategateway = async (req, res, next) => {
         const { name, key, token } = req.body;
 
         if (name === 'Mercado Pago' || name === 'Picpay') {
-            if (typeof key !== 'undefined' && token !== 'undefined') {
+            if (typeof key !== 'undefined' && typeof token !== 'undefined') {
                 const data = await paymentGatewayModel.create({
                     name: name,
                     key: key,
@@ -480,7 +480,50 @@ exports.creategateway = async (req, res, next) => {
             }
         } else {
             req.flash('error', {
-                message: 'Somente permitido: mercado pago ou picpay.',
+                message: 'Somente permitido: mercado pago ou picpay!',
+            });
+        }
+
+        return res.redirect('/payment-gateway');
+    } catch (err) {
+        console.log(err);
+        return res.redirect('/');
+    }
+};
+
+exports.updategateway = async (req, res, next) => {
+    try {
+        const { id, name, key, token } = req.body;
+
+        if (name === 'Mercado Pago' || name === 'Picpay') {
+            if (typeof key !== 'undefined' && typeof token !== 'undefined') {
+                const data = await paymentGatewayModel.update({
+                    name: name,
+                    key: key,
+                    token: token,
+                 }, {
+                    where: {
+                        id: id,
+                    },
+                });
+
+                if (data) {
+                    req.flash('success', {
+                        message: 'Gateway atualizado com sucesso!',
+                    });
+                } else {
+                    req.flash('error', {
+                        message: 'Não foi possível atualizar o gateway',
+                    });
+                }
+            } else {
+                req.flash('error', {
+                    message: 'Requisição inválida!',
+                });
+            }
+        } else {
+            req.flash('error', {
+                message: 'Somente permitido: mercado pago ou picpay!',
             });
         }
 
