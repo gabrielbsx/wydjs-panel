@@ -268,4 +268,31 @@ exports.paymentgateway = async (req, res, next) => {
         console.log(err);
         return res.redirect('/');
     }
+};
+
+exports.updatepaymentgateway = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        
+        const data = await paymentGatewayModel.findOne({
+            where: {
+                id: id,
+            },
+        });
+
+        if (data) {
+            return res.render('dashboard/pages/home', {
+                layout: 'updatepaymentgateway',
+                data: data,
+            });
+        } else {
+            req.flash('error', {
+                message: 'Não foi possível encontrar o gateway de pagamento!',
+            });
+        }
+        return res.redirect('/payment-gateway');
+    } catch (err) {
+        console.log(err);
+        return res.redirect('/');
+    }
 }

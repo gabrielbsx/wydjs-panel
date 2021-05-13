@@ -60,6 +60,7 @@ routes.get('/update-donate-packages/:id', isLoggedMiddleware.logged, isAdminMidd
 routes.get('/list-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, dashboardController.listdonateitems);
 routes.get('/update-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, dashboardController.changedonateitem);
 routes.get('/payment-gateway', isLoggedMiddleware.logged, isAdminMiddleware, dashboardController.paymentgateway);
+routes.get('/update-payment-gateway/:id', isLoggedMiddleware.logged, isAdminMiddleware, dashboardController.updatepaymentgateway);
 
 /**
  * API
@@ -70,6 +71,8 @@ routes.get('/delete-donate-packages/:id', isLoggedMiddleware.logged, isAdminMidd
 routes.post('/donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.createdonateitem);
 routes.post('/update-donate-items', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.updatedonateitems);
 routes.get('/delete-donate-items/:id', isLoggedMiddleware.logged, isAdminMiddleware, apiController.deletedonateitem);
+routes.post('/payment-gateway', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.creategateway);
+routes.post('/update-payment-gateway/:id', recaptchaMiddleware, isLoggedMiddleware.logged, isAdminMiddleware, apiController.creategateway);
 
 routes.use(errorController.error404);
 

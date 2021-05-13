@@ -459,18 +459,31 @@ exports.creategateway = async (req, res, next) => {
 
         if (name === 'Mercado Pago' || name === 'Picpay') {
             if (typeof key !== 'undefined' && typeof token !== 'undefined') {
-                const data = await paymentGatewayModel.create({
-                    name: name,
-                    key: key,
-                    token: token,
+                const exists = await paymentGatewayModel.findOne({
+                    where: {
+                        name: name,
+                    },
                 });
-                if (data) {
-                    req.flash('success', {
-                        message: 'Gateway adicionado com sucesso!',
+                if (!exists) {
+                    const id = v4();
+                    const data = await paymentGatewayModel.create({
+                        id: id,
+                        name: name,
+                        key: key,
+                        token: token,
                     });
+                    if (data) {
+                        req.flash('success', {
+                            message: 'Gateway adicionado com sucesso!',
+                        });
+                    } else {
+                        req.flash('error', {
+                            message: 'Não foi possível adicionar o gateway!',
+                        });
+                    }
                 } else {
                     req.flash('error', {
-                        message: 'Não foi possível adicionar o gateway!',
+                        message: 'Gateway existente!',
                     });
                 }
             } else {
@@ -493,7 +506,8 @@ exports.creategateway = async (req, res, next) => {
 
 exports.updategateway = async (req, res, next) => {
     try {
-        const { id, name, key, token } = req.body;
+        const { id } = req.params
+        const { name, key, token } = req.body;
 
         if (name === 'Mercado Pago' || name === 'Picpay') {
             if (typeof key !== 'undefined' && typeof token !== 'undefined') {
