@@ -418,41 +418,6 @@ exports.deletedonatepackage = async (req, res, next) => {
     }
 };
 
-exports.picpay = async (req, res, next) => {
-    try {
-        const { key, token } = await paymentGatewayModel.findOne({
-            where: {
-                name: 'picpay',
-            },
-        });
-
-        if (typeof key !== 'undefined' && typeof token !== 'undefined') {
-            const _request = axios.post('https://appws.picpay.com/ecommerce/public/payments', {
-                callbackUrl: '',
-                expiresAt: new Date ((new Date.getTime()) + (1000 * 60 * 60 * 24 * 2)),
-                returnUrl: '',
-                value: 10,
-                buyer: {
-                    firstName: '',
-                    lastName: '',
-                    document: '',
-                },
-            }, {
-                headers: {
-                    'x-picpay-token': token,
-                    'Content-Type': 'application/json',
-                }
-            })
-        }
-
-        return res.render('/donate/picpay');
-
-    } catch (err) {
-        console.log(err);
-        return res.redirect('/');
-    }
-};
-
 exports.creategateway = async (req, res, next) => {
     try {
         const { name, key, token } = req.body;
@@ -544,6 +509,49 @@ exports.updategateway = async (req, res, next) => {
         return res.redirect('/payment-gateway');
     } catch (err) {
         console.log(err);
+        return res.redirect('/');
+    }
+};
+
+exports.picpay = async (req, res, next) => {
+    try {
+        const { key, token } = await paymentGatewayModel.findOne({
+            where: {
+                name: 'picpay',
+            },
+        });
+
+        if (typeof key !== 'undefined' && typeof token !== 'undefined') {
+            const _request = axios.post('https://appws.picpay.com/ecommerce/public/payments', {
+                callbackUrl: '',
+                expiresAt: new Date ((new Date.getTime()) + (1000 * 60 * 60 * 24 * 2)),
+                returnUrl: '',
+                value: 10,
+                buyer: {
+                    firstName: '',
+                    lastName: '',
+                    document: '',
+                },
+            }, {
+                headers: {
+                    'x-picpay-token': token,
+                    'Content-Type': 'application/json',
+                }
+            });
+        }
+
+        return res.render('/donate/picpay');
+
+    } catch (err) {
+        console.log(err);
+        return res.redirect('/');
+    }
+};
+
+exports.mercadopago = async (req, res, next) => {
+    try {
+        
+    } catch (err) {
         return res.redirect('/');
     }
 };
