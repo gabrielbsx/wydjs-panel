@@ -30,7 +30,7 @@ exports.register = async (req, res, next) => {
 
 exports.recovery = async (req, res, next) => {
     try {
-        return res.status(200).render('dashboard/pages/index    ', {
+        return res.status(200).render('dashboard/pages/index', {
             layout: 'recovery',
         });
     } catch (err) {

@@ -7,16 +7,14 @@
         <div class="login-wrapper">
             <div class="d-flex justify-content-center mt-5">
                 <div class="card" id="forget-card">
-                    <div class="col-md-6 mx-auto">
+                    <div class="col-md-12 mx-auto">
                         <div class="card-body logo text-center">
-                            <h3>
-                                <img class="w-50" src="public/assets/images/brand.png" alt="">
-                            </h3>
+                            <img src="public/assets/images/brand.png" alt="">
                         </div>
                         <%- include('../partials/messages.ejs'); %>
-                        <div id="forms" class="card-body">
-                            <%- include(`home/${layout}`); %>
-                        </div>
+                    </div>
+                    <div id="forms" class="col-md-12">
+                        <%- include(`home/${layout}`); %>
                     </div>
                 </div>
             </div>

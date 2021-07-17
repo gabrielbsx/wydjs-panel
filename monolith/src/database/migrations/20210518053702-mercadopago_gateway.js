@@ -21,6 +21,14 @@ module.exports = {
         unique: true,
         primaryKey: true,
       },
+      created_at: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+        allowNull: false,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+      },
     });
   },
 
