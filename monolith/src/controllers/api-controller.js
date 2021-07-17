@@ -128,8 +128,6 @@ exports.guildmark = async (req, res, next) => {
         const { guildid } = req.body;
         const { guildmark } = req.files;
         await guildmarkSchema.validateAsync({ guildid: guildid }, { abortEarly: false, });
-
-
         
         if (typeof guildmark !== 'undefined') {
             if (guildmark.mimetype === 'image/bmp') {
